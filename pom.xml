@@ -3,12 +3,12 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.hendisantika.springadm</groupId>
-    <artifactId>spring-adminlte2</artifactId>
+    <groupId>com.tatsinktech.web</groupId>
+    <artifactId>Cms-Vas-Services</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>Spring AdminLte2</name>
+    <name>CMS_VAS_SERVICE</name>
     <description>Spring boot AdminLTE</description>
 
     <parent>
@@ -106,8 +106,6 @@
         <dependency>
             <groupId>com.microsoft.sqlserver</groupId>
             <artifactId>mssql-jdbc</artifactId>
-            <version>7.3.0.jre8-preview</version>
-            <scope>test</scope>
         </dependency>
                
             <!-- https://mvnrepository.com/artifact/org.keycloak/keycloak-spring-boot-2-adapter -->

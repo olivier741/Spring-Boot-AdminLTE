@@ -1,0 +1,57 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="layout">
+<head>
+    <title>ADD SERVICES</title>
+</head>
+<body>
+<section layout:fragment="header">
+    <h1>SERVICES</h1>
+    <ol class="breadcrumb">
+        <li><a href="/"><i class="fa fa-dashboard"></i> Dashboard</a></li>
+        <li class="active">ADD SERVICES</li>
+    </ol>
+</section>
+<div layout:fragment="content">
+    <div class="box">
+        <div class="box-header with-border">
+            <h3 class="box-title">Form</h3>
+            <div class="box-tools pull-right">
+                <a href="/services" type="button" class="btn btn-box-tool"><i class="fa fa-list-ul"></i></a>
+            </div>
+        </div>
+        <form data-toggle="validator" role="form" th:object="${srv}" th:action="@{/services/save}" method="post">
+            <div class="box-body">
+                <input type="hidden" th:field="*{id}"/>
+
+                <div class="form-group">
+                    <label for="Servicename">Service Name</label>
+                    <input type="text" required="true" class="form-control" th:field="*{service_name}" id="service_name" />
+                </div>
+                <div class="form-group">
+                    <label for="RcvChannel">Receive Channel</label>
+                    <input type="text" required="true" class="form-control" th:field="*{receive_channel}" id="receive_channel" />
+                </div>
+                <div class="form-group">
+                    <label for="SendChannel">Send Channel</label>
+                    <input type="text" required="true" class="form-control" th:field="*{send_channel}" id="send_channel" />
+                </div>
+                
+                <div class="form-group">
+                    <label for="SvcProvider">Service Provider</label>
+                    <input type="text" required="true" class="form-control" th:field="*{service_provider}" id="service_provider" />
+                </div>
+                
+                <div class="form-group">
+                    <label for="Description">Description</label>
+                    <input type="text" required="true" class="form-control" th:field="*{service_description}" id="service_description" />
+                </div>
+            </div>
+            <div class="box-footer">
+                <button class="btn btn-primary" type="submit">Save</button>
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+</html>

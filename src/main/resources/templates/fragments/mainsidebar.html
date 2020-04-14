@@ -16,8 +16,23 @@
             <ul class="treeview-menu">
                 <li><a href="/customers/add"><i class="fa fa-circle-o"></i> Add Customers</a></li>
             </ul>
-            <ul class="treeview-menu" sec:authorize="hasRole('ROL')">
+            <ul class="treeview-menu">
                 <li><a href="/customers"><i class="fa fa-circle-o"></i> List Customers</a></li>
+            </ul>
+           
+        </li>
+        
+        <li class="treeview">
+            <a href="#">
+                <i class="fa fa-folder"></i>
+                <span>Service Provider</span>
+                <i class="fa fa-angle-left pull-right"></i>
+            </a>
+            <ul class="treeview-menu">
+                <li><a href="/services/add"><i class="fa fa-circle-o"></i> Add Services</a></li>
+            </ul>
+            <ul class="treeview-menu">
+                <li><a href="/services"><i class="fa fa-circle-o"></i> List Services</a></li>
             </ul>
            
         </li>
