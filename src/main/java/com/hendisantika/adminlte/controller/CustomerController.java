@@ -55,16 +55,16 @@ public class CustomerController {
 
     @GetMapping("/add")
     public String add(@NotNull Model model, @NotNull Authentication auth) {
-        loadMode(model, auth);
         model.addAttribute("customer", new Customers());
+        loadMode(model, auth);
         return "customers/form";
 
     }
 
     @GetMapping("/edit/{id}")
     public String edit(@PathVariable Long id, @NotNull Model model, @NotNull Authentication auth) {
-        loadMode(model, auth);
         model.addAttribute("customer", customerService.get(id));
+        loadMode(model, auth);
         return "customers/form";
 
     }

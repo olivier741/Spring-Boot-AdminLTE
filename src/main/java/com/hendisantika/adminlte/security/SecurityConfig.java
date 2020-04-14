@@ -34,32 +34,9 @@ class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
         KeycloakAuthenticationProvider keycloakAuthenticationProvider = keycloakAuthenticationProvider();
+        keycloakAuthenticationProvider.setGrantedAuthoritiesMapper(new SimpleAuthorityMapper());
         auth.authenticationProvider(keycloakAuthenticationProvider);
-        
-        
        
-       
-
-//         //Use Spring Boots User detailsMAnager
-//        JdbcUserDetailsManager userDetailsService = new JdbcUserDetailsManager();
-//
-//        //Set our Datasource to use the one defined in application.properties
-//        userDetailsService.setDataSource(datasource);
-//
-//        //Create BCryptPassword encoder
-//        PasswordEncoder encoder = new BCryptPasswordEncoder();
-//
-//        //add components
-//        auth.userDetailsService(userDetailsService).passwordEncoder(encoder);
-//        auth.jdbcAuthentication().dataSource(datasource);
-//
-//        // add new user "user" with password "password" - password will be encrypted
-//        if (!userDetailsService.userExists("naruto")) {
-//            List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
-//            authorities.add(new SimpleGrantedAuthority("USER"));
-//            User userDetails = new User("naruto", encoder.encode("1234"), authorities);
-//            userDetailsService.createUser(userDetails);
-//        }
     }
 
     /**
@@ -91,8 +68,12 @@ class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
         super.configure(http);        
           http.authorizeRequests()
                 .antMatchers("/bootstrap/**", "/dist/**","/home/**", "/plugins/**").permitAll()
+                .antMatchers("/customers/**").hasRole("manager")
                 .anyRequest().authenticated()
                 .and()
+            .exceptionHandling()
+                  .accessDeniedPage("/login")
+                  .and()
             .formLogin()
                 .failureUrl("/login?error")
                 .loginPage("/login")
@@ -103,6 +84,7 @@ class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
                 .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
                 .logoutSuccessUrl("/login")
                 .permitAll();
+          http.authorizeRequests().and().exceptionHandling().accessDeniedPage("/error");
     }
     
 
