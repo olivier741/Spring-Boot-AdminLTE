@@ -79,7 +79,7 @@ public class Promotion extends AbstractModel<Long> {
     private long percentage_reg;
     
     @Column(nullable = true)
-    private boolean isExtend = false;
+    private boolean isExtend;
     
     @Column(nullable = true)
     private long promotion_ext_fee;
@@ -100,6 +100,14 @@ public class Promotion extends AbstractModel<Long> {
     
     @OneToMany(mappedBy = "promotion")
     protected Set<Product> listProduct = new HashSet<>();
+
+    public boolean isIsExtend() {
+        return isExtend;
+    }
+
+    public void setIsExtend(boolean isExtend) {
+        this.isExtend = isExtend;
+    }
 
    
 }

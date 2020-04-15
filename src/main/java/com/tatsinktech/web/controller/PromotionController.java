@@ -5,8 +5,8 @@
  */
 package com.tatsinktech.web.controller;
 
-import com.tatsinktech.web.model.register.ServiceProvider;
-import com.tatsinktech.web.service.ServiceProviderService;
+import com.tatsinktech.web.model.register.Promotion;
+import com.tatsinktech.web.service.PromotionService;
 import javax.validation.constraints.NotNull;
 import org.keycloak.adapters.springsecurity.account.SimpleKeycloakAccount;
 import org.keycloak.representations.AccessToken;
@@ -23,29 +23,33 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /**
  *
- * @author olivier
+ * @author olivier.tatsinkou
  */
+
 @Controller
-@RequestMapping("services")
-public class ServiceProviderController {
+@RequestMapping("promotions")
+public class PromotionController {
+    private PromotionService promotionService;
 
-    private ServiceProviderService serviceProviderService;
-
+    
+    
     @Autowired
-    public void setServiceProviderService(ServiceProviderService serviceProviderService) {
-        this.serviceProviderService = serviceProviderService;
+    public void setPromotionService(PromotionService promotionService) {
+        this.promotionService = promotionService;
     }
 
     @GetMapping
     public String index(@NotNull Model model, @NotNull Authentication auth) {
         loadMode(model, auth);
-        return "redirect:/services/1";
+        return "redirect:/promotions/1";
     }
+
+   
 
     @GetMapping(value = "/{pageNumber}")
     public String list(@PathVariable Integer pageNumber, @NotNull Model model, @NotNull Authentication auth) {
         loadMode(model, auth);
-        Page<ServiceProvider> page = serviceProviderService.getList(pageNumber);
+        Page<Promotion> page = promotionService.getList(pageNumber);
 
         int current = page.getNumber() + 1;
         int begin = Math.max(1, current - 5);
@@ -56,40 +60,40 @@ public class ServiceProviderController {
         model.addAttribute("endIndex", end);
         model.addAttribute("currentIndex", current);
 
-        return "services/list";
+        return "promotions/list";
 
     }
 
     @GetMapping("/add")
     public String add(@NotNull Model model, @NotNull Authentication auth) {
-        model.addAttribute("srv", new ServiceProvider());
+        model.addAttribute("promo", new Promotion());
         loadMode(model, auth);
-        return "services/form";
+        return "promotions/form";
 
     }
 
     @GetMapping("/edit/{id}")
     public String edit(@PathVariable Long id, @NotNull Model model, @NotNull Authentication auth) {
-        model.addAttribute("srv", serviceProviderService.get(id));
+        model.addAttribute("promo", promotionService.get(id));
         loadMode(model, auth);
-        return "services/form";
+        return "promotions/form";
 
     }
 
     @PostMapping(value = "/save")
-    public String save(ServiceProvider entity, final RedirectAttributes ra, @NotNull Model model, @NotNull Authentication auth) {
+    public String save(Promotion entity, final RedirectAttributes ra, @NotNull Model model, @NotNull Authentication auth) {
         loadMode(model, auth);
-        ServiceProvider save = serviceProviderService.save(entity);
+        Promotion save = promotionService.save(entity);
         ra.addFlashAttribute("successFlash", "Success Add New Service");
-        return "redirect:/services";
+        return "redirect:/promotions";
 
     }
 
     @GetMapping("/delete/{id}")
     public String delete(@PathVariable Long id, @NotNull Model model, @NotNull Authentication auth) {
         loadMode(model, auth);
-        serviceProviderService.delete(id);
-        return "redirect:/services";
+        promotionService.delete(id);
+        return "redirect:/promotions";
 
     }
 

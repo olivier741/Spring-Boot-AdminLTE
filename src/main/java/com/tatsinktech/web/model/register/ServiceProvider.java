@@ -57,7 +57,7 @@ public class ServiceProvider extends AbstractModel<Long> {
     private String service_provider;
     
     @Column(nullable = true)
-    private String service_description;
+    private String description;
     
     @Column(nullable = true)
     @CreationTimestamp

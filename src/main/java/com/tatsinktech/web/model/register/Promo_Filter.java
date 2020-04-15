@@ -10,5 +10,5 @@ package com.tatsinktech.web.model.register;
  * @author olivier
  */
 public enum Promo_Filter {
-    TABLE,REGEX
+    TABLE,REGEX,NONE
 }

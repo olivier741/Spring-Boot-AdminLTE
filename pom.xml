@@ -58,6 +58,12 @@
             <groupId>nz.net.ultraq.thymeleaf</groupId>
             <artifactId>thymeleaf-layout-dialect</artifactId>
         </dependency>
+        
+        <dependency>
+            <groupId>org.thymeleaf.extras</groupId>
+            <artifactId>thymeleaf-extras-java8time</artifactId>
+            <version>3.0.4.RELEASE</version>
+        </dependency>
 
        
         <dependency>
@@ -74,7 +80,7 @@
             <scope>test</scope>
         </dependency>
         
-  <!-- database -->
+        <!-- database -->
                  
         <dependency>
             <groupId>mysql</groupId>
@@ -85,7 +91,7 @@
         <dependency>
             <groupId>org.mariadb.jdbc</groupId>
             <artifactId>mariadb-java-client</artifactId>
-             <scope>runtime</scope>
+            <scope>runtime</scope>
         </dependency>
                   
 
@@ -108,7 +114,7 @@
             <artifactId>mssql-jdbc</artifactId>
         </dependency>
                
-            <!-- https://mvnrepository.com/artifact/org.keycloak/keycloak-spring-boot-2-adapter -->
+        <!-- https://mvnrepository.com/artifact/org.keycloak/keycloak-spring-boot-2-adapter -->
         <dependency>
             <groupId>org.keycloak</groupId>
             <artifactId>keycloak-spring-boot-2-adapter</artifactId>

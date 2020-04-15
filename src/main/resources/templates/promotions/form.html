@@ -1,0 +1,105 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="layout">
+    <head>
+        <title>ADD SERVICES</title>
+    </head>
+    <body>
+        <section layout:fragment="header">
+            <h1>PROMOTIONS</h1>
+            <ol class="breadcrumb">
+                <li><a href="/"><i class="fa fa-dashboard"></i> Dashboard</a></li>
+                <li class="active">ADD PROMOTIONS</li>
+            </ol>
+        </section>
+        <div layout:fragment="content">
+            <div class="box">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Form</h3>
+                    <div class="box-tools pull-right">
+                        <a href="/promotions" type="button" class="btn btn-box-tool"><i class="fa fa-list-ul"></i></a>
+                    </div>
+                </div>
+                <form data-toggle="validator" role="form" th:object="${promo}" th:action="@{/promotions/save}" method="post">
+                    <div class="box-body">
+                        <input type="hidden" th:field="*{id}"/>
+
+                        <div class="form-group">
+                            <label for="PromotionName">Promotion Name</label>
+                            <input type="text" required="true" class="form-control" th:field="*{promotion_name}" id="promotion_name" />
+                        </div>
+
+                        <div class="form-group">
+                            <label for="PromoFilter">Promotion Filter</label>
+                            <select  class="form-control" th:field="*{promotion_filter}" id="promotion_filter" >
+                                <option th:value="'NONE'" th:text="NONE"></option>
+                                <option th:value="'TABLE'" th:text="TABLE"></option>
+                                <option th:value="'REGEX'" th:text="REGEX"></option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="TableName">TABLE NAME</label>
+                            <input type="text" class="form-control" th:field="*{msisdn_table}" id="msisdn_table" />
+                        </div>
+                        <div class="form-group">
+                            <label for="regexString">REGEX</label>
+                            <input type="text" class="form-control" th:field="*{msisdn_regex}" id="msisdn_regex" />
+                        </div>
+
+                        <div class="form-group">
+                            <label for="StartTime">Start Time</label>
+                            <input type="date" required="true" class="form-control"  th:value="${#dates.format(start_time, 'dd/MMM/yyyy HH:mm')}" />
+                        </div>
+
+                        <div class="form-group">
+                            <label for="EndTime">End Time</label>
+                            <input type="date" required="true" class="form-control"  th:value="${#dates.format(end_time, 'yyyy-MM-dd HH:mm:ss')}" />
+                        </div>
+
+                        <div class="form-group">
+                            <label for="ReductMode">Reduction Mode</label>
+                            <select required="true"  class="form-control" th:field="*{reduction_mode}" id="reduction_mode" >
+                                <option th:value="'PERCENTAGE'" th:text="PERCENTAGE"></option>
+                                <option th:value="'VALUE'" th:text="VALUE"></option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="PromoFee">Reduct Value</label>
+                            <input type="number"  class="form-control" th:field="*{promotion_reg_fee}" id="promotion_reg_fee" />
+                        </div>
+
+                        <div class="form-group">
+                            <label for="PercReduct">Reduct Percentage</label>
+                            <input type="number" class="form-control" th:field="*{percentage_reg}" id="percentage_reg" />
+                        </div>
+
+                        <div class="form-group">
+                            <label for="IsExtend">Enable Extend</label>
+                            <input   type="checkbox"  class="form-control"  th:checked="${isExtend==true}" id="isExtend" />
+                        </div>
+                        
+                         <div class="form-group">
+                            <label for="ExtFee">Reduct Extend Value</label>
+                            <input type="number" class="form-control" th:field="*{promotion_ext_fee}" id="promotion_ext_fee" />
+                        </div>
+                        
+                         <div class="form-group">
+                            <label for="ExtRedPer">Reduct Extend By Percentage</label>
+                            <input type="number" class="form-control" th:field="*{percentage_ext}" id="percentage_ext" />
+                        </div>
+
+                        <div class="form-group">
+                            <label for="Description">Description</label>
+                            <input type="text" class="form-control" th:field="*{description}" id="description" />
+                        </div>
+                    </div>
+                    <div class="box-footer">
+                        <button class="btn btn-primary" type="submit">Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </body>
+</html>
