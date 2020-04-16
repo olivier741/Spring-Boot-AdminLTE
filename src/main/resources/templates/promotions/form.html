@@ -8,7 +8,7 @@
         <section layout:fragment="header">
             <h1>PROMOTIONS</h1>
             <ol class="breadcrumb">
-                <li><a href="/"><i class="fa fa-dashboard"></i> Dashboard</a></li>
+                <li><a href="/"><i class="fa fa-dashboard"></i>Home</a></li>
                 <li class="active">ADD PROMOTIONS</li>
             </ol>
         </section>
@@ -49,14 +49,26 @@
 
                         <div class="form-group">
                             <label for="StartTime">Start Time</label>
-                            <input type="date" required="true" class="form-control"  th:value="${#dates.format(start_time, 'dd/MMM/yyyy HH:mm')}" />
-                        </div>
-
-                        <div class="form-group">
+                            <div style="text-align:left; margin:10px auto 10px auto;" class="dateselecter">
+                                <input type='text' class="form-control" 
+                                       maxlength="50" 
+                                       th:value="*{#dates.format(start_time, 'yyyy-MM-dd HH:mm:ss')}" 
+                                       onclick="javascript:NewCssCal('start_time', 'yyyyMMdd', 'arrow', true, '24', true)"
+                                       style="width:800px;" id ="start_time"/>
+                                <i class="glyphicon glyphicon-calendar" onclick="javascript:NewCssCal('start_time', 'yyyyMMdd', 'arrow', true, '24', true)" style="cursor:pointer; font-size:18px;"/></i> 
+                            </div>
+                            
                             <label for="EndTime">End Time</label>
-                            <input type="date" required="true" class="form-control"  th:value="${#dates.format(end_time, 'yyyy-MM-dd HH:mm:ss')}" />
+                            <div style="text-align:left; margin:10px auto 10px auto;" class="dateselecter">
+                                <input type='text' class="form-control" 
+                                       maxlength="50" 
+                                       th:value="*{#dates.format(end_time, 'yyyy-MM-dd HH:mm:ss')}" 
+                                       onclick="javascript:NewCssCal('end_time', 'yyyyMMdd', 'arrow', true, '24', true)"
+                                       style="width:800px;" id ="end_time"/>
+                                <i class="glyphicon glyphicon-calendar" onclick="javascript:NewCssCal('end_time', 'yyyyMMdd', 'arrow', true, '24', true)" style="cursor:pointer; font-size:18px;"/></i> 
+                            </div>
+                            
                         </div>
-
                         <div class="form-group">
                             <label for="ReductMode">Reduction Mode</label>
                             <select required="true"  class="form-control" th:field="*{reduction_mode}" id="reduction_mode" >
@@ -79,13 +91,13 @@
                             <label for="IsExtend">Enable Extend</label>
                             <input   type="checkbox"  class="form-control"  th:checked="${isExtend==true}" id="isExtend" />
                         </div>
-                        
-                         <div class="form-group">
+
+                        <div class="form-group">
                             <label for="ExtFee">Reduct Extend Value</label>
                             <input type="number" class="form-control" th:field="*{promotion_ext_fee}" id="promotion_ext_fee" />
                         </div>
-                        
-                         <div class="form-group">
+
+                        <div class="form-group">
                             <label for="ExtRedPer">Reduct Extend By Percentage</label>
                             <input type="number" class="form-control" th:field="*{percentage_ext}" id="percentage_ext" />
                         </div>

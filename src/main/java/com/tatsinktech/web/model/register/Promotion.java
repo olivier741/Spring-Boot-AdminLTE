@@ -6,25 +6,18 @@
 package com.tatsinktech.web.model.register;
 
 import com.tatsinktech.web.model.AbstractModel;
-import java.io.Serializable;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.SequenceGenerator;
-import java.sql.Date;
+import java.util.Date;
 import java.sql.Timestamp;
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Transient;
-import javax.persistence.UniqueConstraint;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
@@ -34,6 +27,7 @@ import lombok.ToString;
 import org.hibernate.annotations.Check;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.format.annotation.DateTimeFormat;
 
 
 /**
@@ -63,11 +57,13 @@ public class Promotion extends AbstractModel<Long> {
     @Column(nullable = true)
     private String msisdn_regex;
     
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(nullable = true)
-    private Timestamp start_time;
+    private Date start_time;
     
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(nullable = true)
-    private Timestamp end_time;
+    private Date end_time;
     
     @Enumerated(EnumType.STRING)
     private Reduction_Type reduction_mode;

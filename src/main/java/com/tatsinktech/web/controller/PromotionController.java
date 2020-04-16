@@ -7,15 +7,20 @@ package com.tatsinktech.web.controller;
 
 import com.tatsinktech.web.model.register.Promotion;
 import com.tatsinktech.web.service.PromotionService;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import javax.validation.constraints.NotNull;
 import org.keycloak.adapters.springsecurity.account.SimpleKeycloakAccount;
 import org.keycloak.representations.AccessToken;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.data.domain.Page;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,26 +30,27 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
  *
  * @author olivier.tatsinkou
  */
-
 @Controller
 @RequestMapping("promotions")
 public class PromotionController {
+
     private PromotionService promotionService;
 
-    
-    
     @Autowired
     public void setPromotionService(PromotionService promotionService) {
         this.promotionService = promotionService;
     }
+
+//    @InitBinder
+//    public void initDateBinder(final WebDataBinder binder) {
+//        binder.registerCustomEditor(Date.class, new CustomDateEditor(new SimpleDateFormat("yyyy-mm-dd"), true));
+//    }
 
     @GetMapping
     public String index(@NotNull Model model, @NotNull Authentication auth) {
         loadMode(model, auth);
         return "redirect:/promotions/1";
     }
-
-   
 
     @GetMapping(value = "/{pageNumber}")
     public String list(@PathVariable Integer pageNumber, @NotNull Model model, @NotNull Authentication auth) {
