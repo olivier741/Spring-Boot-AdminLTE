@@ -9,6 +9,9 @@ import com.tatsinktech.web.model.register.Promotion;
 import com.tatsinktech.web.service.PromotionService;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Optional;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.validation.constraints.NotNull;
 import org.keycloak.adapters.springsecurity.account.SimpleKeycloakAccount;
 import org.keycloak.representations.AccessToken;
@@ -34,6 +37,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @RequestMapping("promotions")
 public class PromotionController {
 
+    private Logger logger = Logger.getLogger(this.getClass().getName());
     private PromotionService promotionService;
 
     @Autowired
@@ -45,7 +49,6 @@ public class PromotionController {
 //    public void initDateBinder(final WebDataBinder binder) {
 //        binder.registerCustomEditor(Date.class, new CustomDateEditor(new SimpleDateFormat("yyyy-mm-dd"), true));
 //    }
-
     @GetMapping
     public String index(@NotNull Model model, @NotNull Authentication auth) {
         loadMode(model, auth);
@@ -89,9 +92,21 @@ public class PromotionController {
     @PostMapping(value = "/save")
     public String save(Promotion entity, final RedirectAttributes ra, @NotNull Model model, @NotNull Authentication auth) {
         loadMode(model, auth);
-        Promotion save = promotionService.save(entity);
-        ra.addFlashAttribute("successFlash", "Success Add New Service");
-        return "redirect:/promotions";
+
+        if (Optional.ofNullable(entity.getStart_time()).isPresent() && Optional.ofNullable(entity.getEnd_time()).isPresent()) {
+            try {
+                Promotion save = promotionService.save(entity);
+                ra.addFlashAttribute("successFlash", "Success Add New Service");
+                logger.info("Success Add new Promoiton =  " + save);
+            } catch (Exception e) {
+                logger.log(Level.SEVERE, "Error to Add promotion", e);
+                model.addAttribute("invalidAdd_Promotion", true);
+            }
+            return "redirect:/promotions";
+        } else {
+            model.addAttribute("errorMessage", "Invalid Start date or End date format");
+            return "redirect:/promotions/add";
+        }
 
     }
 

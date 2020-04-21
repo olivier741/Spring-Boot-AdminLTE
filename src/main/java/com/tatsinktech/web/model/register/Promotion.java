@@ -7,8 +7,8 @@ package com.tatsinktech.web.model.register;
 
 import com.tatsinktech.web.model.AbstractModel;
 import javax.persistence.Entity;
-import java.util.Date;
 import java.sql.Timestamp;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 import javax.persistence.Column;
@@ -27,7 +27,6 @@ import lombok.ToString;
 import org.hibernate.annotations.Check;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-import org.springframework.format.annotation.DateTimeFormat;
 
 
 /**
@@ -59,11 +58,11 @@ public class Promotion extends AbstractModel<Long> {
     
     @Temporal(TemporalType.TIMESTAMP)
     @Column(nullable = true)
-    private Date start_time;
+    public Date start_time;
     
     @Temporal(TemporalType.TIMESTAMP)
     @Column(nullable = true)
-    private Date end_time;
+    public Date end_time;
     
     @Enumerated(EnumType.STRING)
     private Reduction_Type reduction_mode;

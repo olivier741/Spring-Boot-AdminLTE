@@ -20,18 +20,27 @@
                         <a href="/promotions" type="button" class="btn btn-box-tool"><i class="fa fa-list-ul"></i></a>
                     </div>
                 </div>
+
+                <strong th:if="${invalidAdd_Promotion}" >
+                    <div th:text="#{error.invalidComparisonErrorMessage}"
+                         class="ui-state-error ui-state-error-text"></div>
+                </strong>
+                <strong th:if="${errorMessage}" >
+                    <div th:utext="${errorMessage}" class="ui-state-error ui-state-error-text"></div>
+                </strong>
+
                 <form data-toggle="validator" role="form" th:object="${promo}" th:action="@{/promotions/save}" method="post">
                     <div class="box-body">
                         <input type="hidden" th:field="*{id}"/>
 
                         <div class="form-group">
                             <label for="PromotionName">Promotion Name</label>
-                            <input type="text" required="true" class="form-control" th:field="*{promotion_name}" id="promotion_name" />
+                            <input type="text" required="true" class="form-control" th:field="*{promotion_name}" style="width:800px;" id="promotion_name" />
                         </div>
 
                         <div class="form-group">
                             <label for="PromoFilter">Promotion Filter</label>
-                            <select  class="form-control" th:field="*{promotion_filter}" id="promotion_filter" >
+                            <select  class="form-control" th:field="*{promotion_filter}" style="width:800px;" id="promotion_filter" >
                                 <option th:value="'NONE'" th:text="NONE"></option>
                                 <option th:value="'TABLE'" th:text="TABLE"></option>
                                 <option th:value="'REGEX'" th:text="REGEX"></option>
@@ -40,38 +49,39 @@
 
                         <div class="form-group">
                             <label for="TableName">TABLE NAME</label>
-                            <input type="text" class="form-control" th:field="*{msisdn_table}" id="msisdn_table" />
+                            <input type="text" class="form-control" th:field="*{msisdn_table}"  style="width:800px;" id="msisdn_table" />
                         </div>
                         <div class="form-group">
                             <label for="regexString">REGEX</label>
-                            <input type="text" class="form-control" th:field="*{msisdn_regex}" id="msisdn_regex" />
+                            <input type="text" class="form-control" th:field="*{msisdn_regex}" style="width:800px;" id="msisdn_regex" />
                         </div>
 
                         <div class="form-group">
                             <label for="StartTime">Start Time</label>
-                            <div style="text-align:left; margin:10px auto 10px auto;" class="dateselecter">
-                                <input type='text' class="form-control" 
-                                       maxlength="50" 
-                                       th:value="*{#dates.format(start_time, 'yyyy-MM-dd HH:mm:ss')}" 
-                                       onclick="javascript:NewCssCal('start_time', 'yyyyMMdd', 'arrow', true, '24', true)"
-                                       style="width:800px;" id ="start_time"/>
-                                <i class="glyphicon glyphicon-calendar" onclick="javascript:NewCssCal('start_time', 'yyyyMMdd', 'arrow', true, '24', true)" style="cursor:pointer; font-size:18px;"/></i> 
+                            <div class='input-group date' style="width:800px;" id='start_time'>
+                                <input type='text' class="form-control" th:field="*{start_time}"
+                                        th:value="*{start_time}" />
+                                <span class="input-group-addon">
+                                    <span class="glyphicon glyphicon-calendar"></span>
+                                </span>
                             </div>
-                            
-                            <label for="EndTime">End Time</label>
-                            <div style="text-align:left; margin:10px auto 10px auto;" class="dateselecter">
-                                <input type='text' class="form-control" 
-                                       maxlength="50" 
-                                       th:value="*{#dates.format(end_time, 'yyyy-MM-dd HH:mm:ss')}" 
-                                       onclick="javascript:NewCssCal('end_time', 'yyyyMMdd', 'arrow', true, '24', true)"
-                                       style="width:800px;" id ="end_time"/>
-                                <i class="glyphicon glyphicon-calendar" onclick="javascript:NewCssCal('end_time', 'yyyyMMdd', 'arrow', true, '24', true)" style="cursor:pointer; font-size:18px;"/></i> 
-                            </div>
-                            
                         </div>
+
+                        <div class="form-group">
+                            <label for="EndTime">End Time</label>
+                            <div class='input-group date' style="width:800px;" id='end_time'>
+                                <input type='text' class="form-control"  th:field="*{end_time}"
+                                        th:value="*{end_time}" />
+                                <span class="input-group-addon">
+                                    <span class="glyphicon glyphicon-calendar"></span>
+                                </span>
+                            </div>
+                        </div>
+
+
                         <div class="form-group">
                             <label for="ReductMode">Reduction Mode</label>
-                            <select required="true"  class="form-control" th:field="*{reduction_mode}" id="reduction_mode" >
+                            <select required="true"  class="form-control" th:field="*{reduction_mode}" style="width:800px;" id="reduction_mode" >
                                 <option th:value="'PERCENTAGE'" th:text="PERCENTAGE"></option>
                                 <option th:value="'VALUE'" th:text="VALUE"></option>
                             </select>
@@ -79,32 +89,32 @@
 
                         <div class="form-group">
                             <label for="PromoFee">Reduct Value</label>
-                            <input type="number"  class="form-control" th:field="*{promotion_reg_fee}" id="promotion_reg_fee" />
+                            <input type="number"  class="form-control" th:field="*{promotion_reg_fee}" style="width:800px;" id="promotion_reg_fee" />
                         </div>
 
                         <div class="form-group">
                             <label for="PercReduct">Reduct Percentage</label>
-                            <input type="number" class="form-control" th:field="*{percentage_reg}" id="percentage_reg" />
+                            <input type="number" class="form-control" th:field="*{percentage_reg}" style="width:800px;" id="percentage_reg" />
                         </div>
 
                         <div class="form-group">
                             <label for="IsExtend">Enable Extend</label>
-                            <input   type="checkbox"  class="form-control"  th:checked="${isExtend==true}" id="isExtend" />
+                            <input   type="checkbox"  class="form-control"  th:checked="${isExtend==true}" style="width:800px;" id="isExtend" />
                         </div>
 
                         <div class="form-group">
                             <label for="ExtFee">Reduct Extend Value</label>
-                            <input type="number" class="form-control" th:field="*{promotion_ext_fee}" id="promotion_ext_fee" />
+                            <input type="number" class="form-control" th:field="*{promotion_ext_fee}" style="width:800px;" id="promotion_ext_fee" />
                         </div>
 
                         <div class="form-group">
                             <label for="ExtRedPer">Reduct Extend By Percentage</label>
-                            <input type="number" class="form-control" th:field="*{percentage_ext}" id="percentage_ext" />
+                            <input type="number" class="form-control" th:field="*{percentage_ext}" style="width:800px;" id="percentage_ext" />
                         </div>
 
                         <div class="form-group">
                             <label for="Description">Description</label>
-                            <input type="text" class="form-control" th:field="*{description}" id="description" />
+                            <input type="text" class="form-control" th:field="*{description}" style="width:800px;" id="description" />
                         </div>
                     </div>
                     <div class="box-footer">
