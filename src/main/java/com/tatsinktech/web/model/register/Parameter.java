@@ -50,16 +50,6 @@ public class Parameter extends AbstractModel<Long> {
     @Column(nullable = true)
     private String param_pattern;
 
-    @Column(nullable = true)
-    private String description;
-
-    @Column(nullable = true)
-    @CreationTimestamp
-    private Timestamp create_time;
-
-    @Column(nullable = true)
-    @UpdateTimestamp
-    private Timestamp update_time;
 
     @OneToMany(mappedBy = "parameter")
     private Set<Command> listCommand = new HashSet<>();

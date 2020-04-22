@@ -96,13 +96,35 @@
             $.widget.bridge('uibutton', $.ui.button);
         </script>
 
-         <script type="text/javascript">
-                $(function () {
-                    $('#start_time').datetimepicker();
-                    
-                    $('#end_time').datetimepicker();
-                });
-            </script>
+        <script type="text/javascript">
+            $(function () {
+                $('#start_time').datetimepicker(
+                        {
+                            format: 'YYYY-MM-DD HH:mm',
+                            extraFormats: ['DD-MM-YYYY HH:mm'],
+                            useCurrent: false,
+                            sideBySide: false,
+                            showTodayButton: true,
+                            showClear: true,
+                            keepInvalid: true,
+                            allowInputToggle: true,
+                        }
+                );
+
+                $('#end_time').datetimepicker(
+                        {
+                            format: 'YYYY-MM-DD HH:mm',
+                            extraFormats: ['DD-MM-YYYY HH:mm'],
+                            useCurrent: false,
+                            sideBySide: false,
+                            showTodayButton: true,
+                            showClear: true,
+                            keepInvalid: true,
+                            allowInputToggle: true,
+                        }
+                );
+            });
+        </script>
 
         <script src="/bootstrap/js/bootstrap.min.js"></script>
         <script src="/plugins/morris/morris.min.js"></script>

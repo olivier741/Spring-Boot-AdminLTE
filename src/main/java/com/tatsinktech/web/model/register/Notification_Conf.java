@@ -49,16 +49,6 @@ public class Notification_Conf extends AbstractModel<Long>{
     @Lob
     private String notification_value;
     
-    @Column(nullable = true)
-    private String description;
-    
-    @Column(nullable = true)
-    @CreationTimestamp
-    private Timestamp create_time;
-    
-    @Column(nullable = true)
-    @UpdateTimestamp
-    private Timestamp update_time;
     
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "command_id", nullable = true)

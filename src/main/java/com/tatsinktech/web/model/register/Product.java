@@ -85,17 +85,7 @@ public class Product extends AbstractModel<Long> {
     @Column(nullable = true)
     private String pending_duration;  // D30 mean customer pending 30 Day on this offert, he is cancel (system will not try to extend) 
     
-    @Column(nullable = true)
-    private String description;
     
-    @Column(nullable = true)
-    @CreationTimestamp
-    private Timestamp create_time;
-    
-    @Column(nullable = true)
-    @UpdateTimestamp
-    private Timestamp update_time;
-           
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "promotion_id", nullable = true)
     private Promotion promotion;

@@ -60,7 +60,7 @@
                             <label for="StartTime">Start Time</label>
                             <div class='input-group date' style="width:800px;" id='start_time'>
                                 <input type='text' class="form-control" th:field="*{start_time}"
-                                        th:value="*{start_time}" />
+                                       ng-model="dateString" />
                                 <span class="input-group-addon">
                                     <span class="glyphicon glyphicon-calendar"></span>
                                 </span>
@@ -70,8 +70,8 @@
                         <div class="form-group">
                             <label for="EndTime">End Time</label>
                             <div class='input-group date' style="width:800px;" id='end_time'>
-                                <input type='text' class="form-control"  th:field="*{end_time}"
-                                        th:value="*{end_time}" />
+                                <input type='text' class="form-control" th:field="*{end_time}"
+                                       ng-model="dateString"  />
                                 <span class="input-group-addon">
                                     <span class="glyphicon glyphicon-calendar"></span>
                                 </span>

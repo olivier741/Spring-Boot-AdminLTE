@@ -56,18 +56,7 @@ public class ServiceProvider extends AbstractModel<Long> {
     @Column(nullable = true)
     private String service_provider;
     
-    @Column(nullable = true)
-    private String description;
-    
-    @Column(nullable = true)
-    @CreationTimestamp
-    private Timestamp create_time;
-    
-    @Column(nullable = true)
-    @UpdateTimestamp
-    private Timestamp update_time;
-    
-    
+
     @OneToMany(mappedBy = "service")
     private Set<Product> listProduct = new HashSet<>();
 

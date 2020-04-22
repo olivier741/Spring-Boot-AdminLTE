@@ -5,6 +5,11 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import java.io.Serializable;
+import java.sql.Timestamp;
+import javax.persistence.Column;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
 
 @MappedSuperclass
 public abstract class AbstractModel<Long extends Serializable> implements Serializable {
@@ -22,6 +27,43 @@ public abstract class AbstractModel<Long extends Serializable> implements Serial
     public void setId(Long id) {
         this.id = id;
     }
+    
+    @Column(nullable = true)
+    private String description;
+    
+    @Column(nullable = true)
+    @CreationTimestamp
+    private Timestamp create_time;
+    
+    @Column(nullable = true)
+    @UpdateTimestamp
+    private Timestamp update_time;
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public Timestamp getCreate_time() {
+        return create_time;
+    }
+
+    public void setCreate_time(Timestamp create_time) {
+        this.create_time = create_time;
+    }
+
+    public Timestamp getUpdate_time() {
+        return update_time;
+    }
+
+    public void setUpdate_time(Timestamp update_time) {
+        this.update_time = update_time;
+    }
+    
+    
 
     @Override
     public int hashCode() {

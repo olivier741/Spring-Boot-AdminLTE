@@ -48,16 +48,6 @@ public class Action extends AbstractModel<Long>  {
     @Enumerated(EnumType.STRING)
     private Action_Type action_type;
     
-    @Column(nullable = true)
-    private String description;
-    
-    @Column(nullable = true)
-    @CreationTimestamp
-    private Timestamp create_time;
-    
-    @Column(nullable = true)
-    @UpdateTimestamp
-    private Timestamp update_time;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "product_id", nullable = true)
