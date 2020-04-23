@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="layout">
     <head>
-        <title>ADD SERVICES</title>
+        <title>ADD PROMOTION</title>
     </head>
     <body>
         <section layout:fragment="header">
@@ -21,26 +21,22 @@
                     </div>
                 </div>
 
-                <strong th:if="${invalidAdd_Promotion}" >
-                    <div th:text="#{error.invalidComparisonErrorMessage}"
-                         class="ui-state-error ui-state-error-text"></div>
-                </strong>
-                <strong th:if="${errorMessage}" >
-                    <div th:utext="${errorMessage}" class="ui-state-error ui-state-error-text"></div>
-                </strong>
-
                 <form data-toggle="validator" role="form" th:object="${promo}" th:action="@{/promotions/save}" method="post">
                     <div class="box-body">
                         <input type="hidden" th:field="*{id}"/>
 
                         <div class="form-group">
                             <label for="PromotionName">Promotion Name</label>
-                            <input type="text" required="true" class="form-control" th:field="*{promotion_name}" style="width:800px;" id="promotion_name" />
-                        </div>
+                            <input type="text" required="true" class="form-control" 
+                                   th:field="*{promotion_name}" 
+                                   th:readonly="${enableEdit}"
+                                   style="width:800px;" 
+                                   id="promotion_name" />
+                        </div> 
 
                         <div class="form-group">
                             <label for="PromoFilter">Promotion Filter</label>
-                            <select  class="form-control" th:field="*{promotion_filter}" style="width:800px;" id="promotion_filter" >
+                            <select  class="form-control" th:field="*{promotion_filter}"  th:readonly="${enableEdit}" style="width:800px;"  id="promotion_filter" >
                                 <option th:value="'NONE'" th:text="NONE"></option>
                                 <option th:value="'TABLE'" th:text="TABLE"></option>
                                 <option th:value="'REGEX'" th:text="REGEX"></option>
@@ -49,17 +45,17 @@
 
                         <div class="form-group">
                             <label for="TableName">TABLE NAME</label>
-                            <input type="text" class="form-control" th:field="*{msisdn_table}"  style="width:800px;" id="msisdn_table" />
+                            <input type="text" class="form-control" th:field="*{msisdn_table}"   th:readonly="${enableEdit}" style="width:800px;" id="msisdn_table" />
                         </div>
                         <div class="form-group">
                             <label for="regexString">REGEX</label>
-                            <input type="text" class="form-control" th:field="*{msisdn_regex}" style="width:800px;" id="msisdn_regex" />
+                            <input type="text" class="form-control" th:field="*{msisdn_regex}"   th:readonly="${enableEdit}" style="width:800px;" id="msisdn_regex" />
                         </div>
 
                         <div class="form-group">
                             <label for="StartTime">Start Time</label>
                             <div class='input-group date' style="width:800px;" id='start_time'>
-                                <input type='text' class="form-control" th:field="*{start_time}"
+                                <input type='text' class="form-control" required="true" th:field="*{start_time}"   th:readonly="${enableEdit}"
                                        ng-model="dateString" />
                                 <span class="input-group-addon">
                                     <span class="glyphicon glyphicon-calendar"></span>
@@ -70,7 +66,7 @@
                         <div class="form-group">
                             <label for="EndTime">End Time</label>
                             <div class='input-group date' style="width:800px;" id='end_time'>
-                                <input type='text' class="form-control" th:field="*{end_time}"
+                                <input type='text' class="form-control" required="true" th:field="*{end_time}"  th:readonly="${enableEdit}"
                                        ng-model="dateString"  />
                                 <span class="input-group-addon">
                                     <span class="glyphicon glyphicon-calendar"></span>
@@ -81,7 +77,8 @@
 
                         <div class="form-group">
                             <label for="ReductMode">Reduction Mode</label>
-                            <select required="true"  class="form-control" th:field="*{reduction_mode}" style="width:800px;" id="reduction_mode" >
+                            <select required="true"  class="form-control" th:field="*{reduction_mode}"  th:readonly="${enableEdit}"
+                                    style="width:800px;" id="reduction_mode" >
                                 <option th:value="'PERCENTAGE'" th:text="PERCENTAGE"></option>
                                 <option th:value="'VALUE'" th:text="VALUE"></option>
                             </select>
@@ -89,36 +86,49 @@
 
                         <div class="form-group">
                             <label for="PromoFee">Reduct Value</label>
-                            <input type="number"  class="form-control" th:field="*{promotion_reg_fee}" style="width:800px;" id="promotion_reg_fee" />
+                            <input type="number"  class="form-control" th:field="*{promotion_reg_fee}"  th:readonly="${enableEdit}" 
+                                   style="width:800px;" id="promotion_reg_fee" />
                         </div>
 
                         <div class="form-group">
                             <label for="PercReduct">Reduct Percentage</label>
-                            <input type="number" class="form-control" th:field="*{percentage_reg}" style="width:800px;" id="percentage_reg" />
+                            <input type="number" class="form-control" th:field="*{percentage_reg}"  th:readonly="${enableEdit}"
+                                   style="width:800px;" id="percentage_reg" />
                         </div>
 
                         <div class="form-group">
                             <label for="IsExtend">Enable Extend</label>
-                            <input   type="checkbox"  class="form-control"  th:checked="${isExtend==true}" style="width:800px;" id="isExtend" />
+                            <input   type="checkbox"   th:checked="${isExtend}" 
+                                     th:field="*{isExtend}"
+                                     th:disabled="${enableEdit}"th
+                                     style="width:100px;" id="isExtend" />
                         </div>
 
                         <div class="form-group">
                             <label for="ExtFee">Reduct Extend Value</label>
-                            <input type="number" class="form-control" th:field="*{promotion_ext_fee}" style="width:800px;" id="promotion_ext_fee" />
+                            <input type="number" class="form-control" th:field="*{promotion_ext_fee}" 
+                                   th:readonly="${enableEdit}"
+                                   style="width:800px;" id="promotion_ext_fee" />
                         </div>
 
                         <div class="form-group">
                             <label for="ExtRedPer">Reduct Extend By Percentage</label>
-                            <input type="number" class="form-control" th:field="*{percentage_ext}" style="width:800px;" id="percentage_ext" />
+                            <input type="number" class="form-control" th:field="*{percentage_ext}"  th:readonly="${enableEdit}" style="width:800px;" id="percentage_ext" />
                         </div>
 
                         <div class="form-group">
                             <label for="Description">Description</label>
-                            <input type="text" class="form-control" th:field="*{description}" style="width:800px;" id="description" />
+                            <input type="text" class="form-control" th:field="*{description}"  th:readonly="${enableEdit}" style="width:800px;" id="description" />
                         </div>
                     </div>
                     <div class="box-footer">
-                        <button class="btn btn-primary" type="submit">Save</button>
+                        <span th:unless="${enableVisibility}">
+                            <button class="btn btn-primary" style="width:100px;"  name="action" value="save"  type="submit">Save</button>
+                        </span>
+                        <span th:if="${enableVisibility}">
+                            <button class="btn btn-primary" style="width:100px;"  name="action" value="edit" type="submit">Edit</button>
+                        </span>
+
                     </div>
                 </form>
             </div>

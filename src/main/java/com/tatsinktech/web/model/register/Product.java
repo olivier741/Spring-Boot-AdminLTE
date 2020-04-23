@@ -8,6 +8,7 @@ package com.tatsinktech.web.model.register;
 import com.tatsinktech.web.model.AbstractModel;
 import java.sql.Time;
 import java.sql.Timestamp;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 import javax.persistence.Column;
@@ -17,6 +18,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
@@ -26,7 +29,6 @@ import lombok.ToString;
 import org.hibernate.annotations.Check;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-
 
 /**
  *
@@ -42,72 +44,112 @@ import org.hibernate.annotations.UpdateTimestamp;
 @Table(name = "product")
 @Check(constraints = "reg_fee >= 0 AND extend_fee >= 0")
 public class Product extends AbstractModel<Long> {
-            
+
     @Column(nullable = false, unique = true)
     private String product_code;
-    
+
     @Column(nullable = true)
     private long reg_fee;
-    
+
+    // list of restric product separate by | (e.g : CAN1|CAN2)
     @Column(nullable = true)
-    private String restrict_product;  // list of restric product separate by | (e.g : CAN1|CAN2)
-    
+    private String restrict_product;
+
+    //  2019-04-16 23:00:01-07:00:00  this offer will launch  the 2019-04-16 at 11PM 
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(nullable = true)
-    private String register_day;      // 'Day allow register: (e.g 1|2|3) 0-Sunday, 1-Monday, 2-Tuesday, 3-Wednesday, ... not information mean registration every day'
-    
+    public Date start_time;
+
+    //  2050-04-16 23:00:01-07:00:00  this offer will end  the 2050-04-16 at 11PM 
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(nullable = true)
-    private Timestamp start_date;     //  2019-04-16 23:00:01-07:00:00  this promotion will launch  the 2019-04-16 at 11PM 
-    
+    public Date end_time;
+
+    /* This allow to select the thype of validity : Frame or Constant. Frame validity is the validity which go
+       from start_time to end_time and only allow in the frame time by day 
+     */
     @Column(nullable = true)
-    private Timestamp end_date;       //  2050-04-16 23:00:01-07:00:00  this promotion will end  the 2050-04-16 at 11PM 
-   
+    private boolean isFrameValidity = true;
+
+    /*  the Day or hour where customer is not allow to get the service.
+        following the type of constant validity (D or H). we must set information as following : 
+        - (1|2|3) 0-Sunday, 1-Monday, 2-Tuesday, 3-Wednesday, ... not information mean registration every day'
+        - (1|2) 00:00 to 00:59 , 01:00 to 01:59,  ... not information mean registration every time'
+     */
     @Column(nullable = true)
-    private Time start_reg_time;      //  23:00:01  star time in one day from when customer allow to register
-    
+    private String restrict_constant_validity;
+
+    //  07:00:00-13:00:00  this validy will allow service from 07AM to 01PM
     @Column(nullable = true)
-    private Time end_reg_time;        //  07:00:00  end time in one day from when customer not allow to register   
-    
+    private String frame_time_validity;
+
+    // D1 mean customer must have this offer for one Day, H5 mean customer must have this offer for 5 hours
+    @Column(nullable = true)
+    private String validity;
+
+    // D30 mean customer pending 30 Day on this offert, he is cancel (system will not try to extend) 
+    @Column(nullable = true)
+    private String pending_duration;
+
     @Column(nullable = true)
     private boolean isextend = true;
-    
+
     @Column(nullable = true)
     private boolean isOveride_reg = true;
-    
+
     @Column(nullable = true)
-    private boolean isNotify_extend=false;
-    
+    private boolean isNotify_extend = false;
+
     @Column(nullable = true)
     private long extend_fee;
-    
-    @Column(nullable = true)
-    private String validity;          // D1 mean customer must have this offer for one Day, H5 mean customer must have this offer for 5 hours
-    
-    @Column(nullable = true)
-    private String pending_duration;  // D30 mean customer pending 30 Day on this offert, he is cancel (system will not try to extend) 
-    
-    
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "promotion_id", nullable = true)
     private Promotion promotion;
-    
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "service_id", nullable = true)
     private ServiceProvider service;
-   
+
     @OneToMany(mappedBy = "product")
     private Set<Action> listAction = new HashSet<>();
-    
-    @OneToMany(mappedBy = "product")
-    private Set<Register> listRegister= new HashSet<>();
-    
-    @OneToMany(mappedBy = "product")
-    private Set<Charge_Hist> listCharge_Hist= new HashSet<>();
-    
-    @OneToMany(mappedBy = "product")
-    private Set<Mo_Hist> listMo_Hist= new HashSet<>();
-    
-    @OneToMany(mappedBy = "product")
-    private Set<Mt_Hist> listMt_Hist= new HashSet<>();
 
+    @OneToMany(mappedBy = "product")
+    private Set<Register> listRegister = new HashSet<>();
+
+    @OneToMany(mappedBy = "product")
+    private Set<Charge_Hist> listCharge_Hist = new HashSet<>();
+
+    @OneToMany(mappedBy = "product")
+    private Set<Mo_Hist> listMo_Hist = new HashSet<>();
+
+    @OneToMany(mappedBy = "product")
+    private Set<Mt_Hist> listMt_Hist = new HashSet<>();
+
+    public boolean isIsFrameValidity() {
+        return isFrameValidity;
+    }
+
+    public void setIsFrameValidity(boolean isFrameValidity) {
+        this.isFrameValidity = isFrameValidity;
+    }
+
+    public boolean isIsOveride_reg() {
+        return isOveride_reg;
+    }
+
+    public void setIsOveride_reg(boolean isOveride_reg) {
+        this.isOveride_reg = isOveride_reg;
+    }
+
+    public boolean isIsNotify_extend() {
+        return isNotify_extend;
+    }
+
+    public void setIsNotify_extend(boolean isNotify_extend) {
+        this.isNotify_extend = isNotify_extend;
+    }
     
+    
+
 }

@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /**
@@ -39,6 +40,24 @@ public class PromotionController {
 
     private Logger logger = Logger.getLogger(this.getClass().getName());
     private PromotionService promotionService;
+    private boolean enable_edit = false;
+    private boolean enable_visibility = false;
+
+    public boolean isEnable_edit() {
+        return enable_edit;
+    }
+
+    public void setEnable_edit(boolean enable_edit) {
+        this.enable_edit = enable_edit;
+    }
+
+    public boolean isEnable_visibility() {
+        return enable_visibility;
+    }
+
+    public void setEnable_visibility(boolean enable_visibility) {
+        this.enable_visibility = enable_visibility;
+    }
 
     @Autowired
     public void setPromotionService(PromotionService promotionService) {
@@ -65,7 +84,7 @@ public class PromotionController {
         Page<Promotion> page = promotionService.getList(pageNumber);
 
         int current = page.getNumber() + 1;
-        int begin = Math.max(1, current - 5);
+        int begin = Math.max(1, current - 10);
         int end = Math.min(begin + 10, page.getTotalPages());
 
         model.addAttribute("list", page);
@@ -79,6 +98,10 @@ public class PromotionController {
 
     @GetMapping("/add")
     public String add(@NotNull Model model, @NotNull Authentication auth) {
+        enable_edit = false;
+        enable_visibility = false;
+        model.addAttribute("enableEdit", enable_edit);
+        model.addAttribute("enableVisibility", enable_visibility);
         model.addAttribute("promo", new Promotion());
         loadMode(model, auth);
         return "promotions/form";
@@ -87,6 +110,10 @@ public class PromotionController {
 
     @GetMapping("/edit/{id}")
     public String edit(@PathVariable Long id, @NotNull Model model, @NotNull Authentication auth) {
+        enable_edit = true;
+        enable_visibility = true;
+        model.addAttribute("enableEdit", enable_edit);
+        model.addAttribute("enableVisibility", enable_visibility);
         model.addAttribute("promo", promotionService.get(id));
         loadMode(model, auth);
         return "promotions/form";
@@ -94,24 +121,37 @@ public class PromotionController {
     }
 
     @PostMapping(value = "/save")
-    public String save(Promotion entity, final RedirectAttributes ra, @NotNull Model model, @NotNull Authentication auth) {
+    public String save(Promotion entity, final RedirectAttributes ra, @NotNull Model model, @NotNull Authentication auth, @RequestParam(value = "action", required = true) String action) {
+        String result = "/";
         loadMode(model, auth);
 
-        if (Optional.ofNullable(entity.getStart_time()).isPresent() && Optional.ofNullable(entity.getEnd_time()).isPresent()) {
-            try {
-                Promotion save = promotionService.save(entity);
-                ra.addFlashAttribute("successFlash", "Success Add New Service");
-                logger.info("Success Add new Promoiton =  " + save);
-            } catch (Exception e) {
-                logger.log(Level.SEVERE, "Error to Add promotion", e);
-                model.addAttribute("invalidAdd_Promotion", true);
+        if (action.equals("save")) {
+
+            if (Optional.ofNullable(entity.getStart_time()).isPresent() && Optional.ofNullable(entity.getEnd_time()).isPresent()) {
+                try {
+                    Promotion save = promotionService.save(entity);
+                    ra.addFlashAttribute("successFlash", "Success Add New Service");
+                    logger.info("Success Add new Promoiton =  " + save);
+                } catch (Exception e) {
+                    logger.log(Level.SEVERE, "Error to Add promotion", e);
+                    model.addAttribute("invalidAdd_Promotion", true);
+                }
+                result = "redirect:/promotions";
+            } else {
+                model.addAttribute("errorMessage", "Invalid Start date or End date format");
+                result = "redirect:/promotions/add";
             }
-            return "redirect:/promotions";
-        } else {
-            model.addAttribute("errorMessage", "Invalid Start date or End date format");
-            return "redirect:/promotions/add";
+        } else if (action.equals("edit")) {
+
+            enable_edit = false;
+            enable_visibility = false;
+            model.addAttribute("enableEdit", enable_edit);
+            model.addAttribute("enableVisibility", enable_visibility);
+            model.addAttribute("promo", entity);
+            result = "promotions/form";
         }
 
+        return result;
     }
 
     @GetMapping("/delete/{id}")

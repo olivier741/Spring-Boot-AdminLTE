@@ -5,21 +5,33 @@
  */
 package com.tatsinktech.web.controller;
 
+import com.tatsinktech.web.model.register.Product;
 import com.tatsinktech.web.model.register.Promotion;
 import com.tatsinktech.web.model.register.ServiceProvider;
-import com.tatsinktech.web.service.ServiceProviderService;
+import com.tatsinktech.web.repository.ServiceProviderRepository;
+import com.tatsinktech.web.repository.PromotionRepository;
+import com.tatsinktech.web.service.ProductService;
+import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.validation.constraints.NotNull;
 import org.keycloak.adapters.springsecurity.account.SimpleKeycloakAccount;
 import org.keycloak.representations.AccessToken;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.data.domain.Page;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,14 +40,23 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /**
  *
- * @author olivier
+ * @author olivier.tatsinkou
  */
 @Controller
-@RequestMapping("services")
-public class ServiceProviderController {
+@RequestMapping("products")
+public class ProductController {
 
     private Logger logger = Logger.getLogger(this.getClass().getName());
-    private ServiceProviderService serviceProviderService;
+    
+    private ProductService productService;
+    
+    @Autowired
+    private PromotionRepository promotionRepository;
+    
+    @Autowired
+    private ServiceProviderRepository serviceProviderRepository;
+     
+ 
     private boolean enable_edit = false;
     private boolean enable_visibility = false;
 
@@ -56,23 +77,32 @@ public class ServiceProviderController {
     }
 
     @Autowired
-    public void setServiceProviderService(ServiceProviderService serviceProviderService) {
-        this.serviceProviderService = serviceProviderService;
+    public void setProductService(ProductService productService) {
+        this.productService = productService;
+    }
+    
+     
+    @InitBinder
+    public void initBinder(WebDataBinder binder) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        dateFormat.setLenient(false);
+        binder.registerCustomEditor(Date.class, new CustomDateEditor(dateFormat, true));
+
     }
 
     @GetMapping
     public String index(@NotNull Model model, @NotNull Authentication auth) {
         loadMode(model, auth);
-        return "redirect:/services/1";
+        return "redirect:/products/1";
     }
 
     @GetMapping(value = "/{pageNumber}")
     public String list(@PathVariable Integer pageNumber, @NotNull Model model, @NotNull Authentication auth) {
         loadMode(model, auth);
-        Page<ServiceProvider> page = serviceProviderService.getList(pageNumber);
+        Page<Product> page = productService.getList(pageNumber);
 
         int current = page.getNumber() + 1;
-        int begin = Math.max(1, current - 5);
+        int begin = Math.max(1, current - 10);
         int end = Math.min(begin + 10, page.getTotalPages());
 
         model.addAttribute("list", page);
@@ -80,7 +110,7 @@ public class ServiceProviderController {
         model.addAttribute("endIndex", end);
         model.addAttribute("currentIndex", current);
 
-        return "services/list";
+        return "products/list";
 
     }
 
@@ -90,9 +120,14 @@ public class ServiceProviderController {
         enable_visibility = false;
         model.addAttribute("enableEdit", enable_edit);
         model.addAttribute("enableVisibility", enable_visibility);
-        model.addAttribute("srv", new ServiceProvider());
+        
+        List<Promotion> listPromotion = promotionRepository.findAll();
+        List<ServiceProvider> listService = serviceProviderRepository.findAll();
+        model.addAttribute("listPromotion", listPromotion);
+        model.addAttribute("listService", listService);
+        model.addAttribute("product", new Product());
         loadMode(model, auth);
-        return "services/form";
+        return "products/form";
 
     }
 
@@ -102,28 +137,59 @@ public class ServiceProviderController {
         enable_visibility = true;
         model.addAttribute("enableEdit", enable_edit);
         model.addAttribute("enableVisibility", enable_visibility);
-        model.addAttribute("srv", serviceProviderService.get(id));
+        model.addAttribute("product", productService.get(id));
         loadMode(model, auth);
-        return "services/form";
+        return "products/form";
 
     }
 
     @PostMapping(value = "/save")
-    public String save(ServiceProvider entity, final RedirectAttributes ra, @NotNull Model model, @NotNull Authentication auth, @RequestParam(value = "action", required = true) String action) {
+    public String save(Product entity, final RedirectAttributes ra, @NotNull Model model, @NotNull Authentication auth, @RequestParam(value = "action", required = true) String action) {
         String result = "/";
         loadMode(model, auth);
 
         if (action.equals("save")) {
-            ServiceProvider save = serviceProviderService.save(entity);
-            ra.addFlashAttribute("successFlash", "Success Add New Service");
-            result = "redirect:/services";
+
+            if (Optional.ofNullable(entity.getStart_time()).isPresent() && Optional.ofNullable(entity.getEnd_time()).isPresent()) {
+                if (registerValidator(entity.getValidity()) && registerValidator(entity.getPending_duration())) {
+                    Pattern ptn = Pattern.compile("\\-");
+                    List<String> listTime = Arrays.asList(ptn.split(entity.getFrame_time_validity()));
+                    if (time24HoursValidator(listTime.get(0)) && time24HoursValidator(listTime.get(1))) {
+
+                        try {
+                            Product save = productService.save(entity);
+                            ra.addFlashAttribute("successFlash", "Success Add New Service");
+                            logger.info("Success Add new Promoiton =  " + save);
+                        } catch (Exception e) {
+                            logger.log(Level.SEVERE, "Error to Add promotion", e);
+                            model.addAttribute("invalidAdd_Promotion", true);
+                        }
+                        result = "redirect:/products";
+                    } else {
+                        model.addAttribute("errorMessage", "Invalid Frame Time Validity");
+                        model.addAttribute("product", entity);
+                        result = "redirect:/promotions/add";
+                    }
+
+                } else {
+                    model.addAttribute("errorMessage", "Invalid Validity or Pending Duration Format");
+                    model.addAttribute("product", entity);
+                    result = "redirect:/promotions/add";
+                }
+
+            } else {
+                model.addAttribute("errorMessage", "Invalid Start date or End date format");
+                model.addAttribute("product", entity);
+                result = "redirect:/promotions/add";
+            }
         } else if (action.equals("edit")) {
+
             enable_edit = false;
             enable_visibility = false;
             model.addAttribute("enableEdit", enable_edit);
             model.addAttribute("enableVisibility", enable_visibility);
-            model.addAttribute("srv", entity);
-            result = "services/form";
+            model.addAttribute("product", entity);
+            result = "products/form";
         }
 
         return result;
@@ -132,8 +198,8 @@ public class ServiceProviderController {
     @GetMapping("/delete/{id}")
     public String delete(@PathVariable Long id, @NotNull Model model, @NotNull Authentication auth) {
         loadMode(model, auth);
-        serviceProviderService.delete(id);
-        return "redirect:/services";
+        productService.delete(id);
+        return "redirect:/products";
 
     }
 
@@ -163,6 +229,20 @@ public class ServiceProviderController {
         model.addAttribute("keycloak_midlename", midleName);
         model.addAttribute("keycloak_nickname", nickName);
         model.addAttribute("keycloak_phone", phone_number);
+    }
+
+    private boolean time24HoursValidator(String time_hour) {
+        String TIME24HOURS_PATTERN = "([01]?[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]";
+        Pattern pattern = Pattern.compile(TIME24HOURS_PATTERN);
+        Matcher matcher = pattern.matcher(time_hour);
+        return matcher.matches();
+    }
+
+    private boolean registerValidator(String periode) {
+        String regex_string = "^(D|H)([0-9])*";
+        Pattern pattern = Pattern.compile(regex_string);
+        Matcher matcher = pattern.matcher(periode);
+        return matcher.matches();
     }
 
 }

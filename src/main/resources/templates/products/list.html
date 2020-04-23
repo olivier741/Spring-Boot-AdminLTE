@@ -17,7 +17,7 @@
         <div class="box-header with-border">
             <h3 class="box-title">Lists</h3>
             <div class="box-tools pull-right">
-                <a href="/promotions/add" type="button" class="btn btn-box-tool"><i class="fa fa-plus"></i></a>
+                <a href="/products/add" type="button" class="btn btn-box-tool"><i class="fa fa-plus"></i></a>
                 <br clear="all" />
             </div>
         </div>
@@ -47,19 +47,19 @@
                     <td th:text="${#dates.format(row.create_time, 'yyyy-MM-dd HH:mm:ss')}"></td>
                     <td th:text="${#dates.format(row.update_time, 'yyyy-MM-dd HH:mm:ss')}"></td>
                     <td>
-                        <a th:href="${'/promotions/edit/' + row.id}">View</a> |
-                        <a th:href="${'/promotions/delete/' + row.id}">Delete</a>
+                        <a th:href="${'/products/edit/' + row.id}">View</a> |
+                        <a th:href="${'/products/delete/' + row.id}">Delete</a>
                     </td>
                 </tr>
             </table>
         </div>
         <div class="box-footer clearfix">
             <ul class="pagination pagination-sm no-margin pull-right">
-                <li><a href="/promotions/1">First</a></li>
+                <li><a href="/products/1">First</a></li>
                 <li th:each="p : ${#numbers.sequence(1, endIndex/beginIndex)}" th:class="${p == currentIndex} ? 'active' : ''">
-                    <a th:href="${'/promotions/' + p}" th:text="${p}"></a>
+                    <a th:href="${'/products/' + p}" th:text="${p}"></a>
                 </li>
-                <li><a th:href="${'/promotions/' + endIndex}">Last</a></li>
+                <li><a th:href="${'/products/' + endIndex}">Last</a></li>
             </ul>
         </div>
     </div>

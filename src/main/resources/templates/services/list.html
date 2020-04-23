@@ -43,7 +43,7 @@
                     <td th:text="${#dates.format(row.create_time, 'yyyy-MM-dd HH:mm:ss')}"></td>
                     <td th:text="${#dates.format(row.update_time, 'yyyy-MM-dd HH:mm:ss')}"></td>
                     <td>
-                        <a th:href="${'/services/edit/' + row.id}">Edit</a> |
+                        <a th:href="${'/services/edit/' + row.id}">View</a> |
                         <a th:href="${'/services/delete/' + row.id}">Delete</a>
                     </td>
                 </tr>

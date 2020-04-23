@@ -1,0 +1,194 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="layout">
+    <head>
+        <title>ADD PRODUCT</title>
+    </head>
+    <body>
+        <section layout:fragment="header">
+            <h1>PRODUCTS</h1>
+            <ol class="breadcrumb">
+                <li><a href="/"><i class="fa fa-dashboard"></i>Home</a></li>
+                <li class="active">ADD PRODUCT</li>
+            </ol>
+        </section>
+        <div layout:fragment="content">
+            <div class="box">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Form</h3>
+                    <div class="box-tools pull-right">
+                        <a href="/products" type="button" class="btn btn-box-tool"><i class="fa fa-list-ul"></i></a>
+                    </div>
+                </div>
+
+                <form data-toggle="validator" role="form" th:object="${product}" th:action="@{/products/save}" method="post">
+                    <div class="box-body">
+                        <input type="hidden" th:field="*{id}"/>
+
+                        <div class="form-group">
+                            <label for="ProductName">Product Name</label>
+                            <input type="text" required="true" class="form-control" 
+                                   th:field="*{product_code}" 
+                                   th:readonly="${enableEdit}"
+                                   style="width:800px;" 
+                                   id="product_code" />
+                        </div> 
+
+                        <div class="form-group">
+                            <label for="RegFee">Registration Fee</label>
+                            <input type="number"  class="form-control" th:field="*{reg_fee}"  th:readonly="${enableEdit}" 
+                                   style="width:800px;" id="reg_fee" />
+                        </div>
+
+
+
+                        <div class="form-group">
+                            <label for="Promo">Promotion</label>
+                            <select  class="form-control"  th:field="*{promotion.promotion_name}"   th:readonly="${enableEdit}" style="width:800px;"  id="promotion_filter" >
+                                <option th:value="'NONE'" th:text="NONE"></option>
+                                <option th:each="promo : ${listPromotion}"
+                                        th:value="${promo.promotion_name}"
+                                        th:utext="${promo.promotion_name}" />
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="Service">Service</label>
+                            <select  class="form-control"  th:field="*{service.service_name}"   th:readonly="${enableEdit}" style="width:800px;"  id="promotion_filter" >
+                                <option th:value="'NONE'" th:text="NONE"></option>
+                                <option th:each="srv : ${listService}"
+                                        th:value="${srv.service_name}"
+                                        th:utext="${srv.service_name}" />
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="RestrictProduct">Product Restricted</label>
+                            <input type="text" required="true" class="form-control" 
+                                   th:field="*{restrict_product}" 
+                                   th:readonly="${enableEdit}"
+                                   style="width:800px;" 
+                                   id="restrict_product" />
+                        </div> 
+
+                        <div class="form-group">
+                            <label for="StartTime">Start Time</label>
+                            <div class='input-group date' style="width:800px;" id='start_time'>
+                                <input type='text' class="form-control" required="true" th:field="*{start_time}"   th:readonly="${enableEdit}"
+                                       ng-model="dateString" />
+                                <span class="input-group-addon">
+                                    <span class="glyphicon glyphicon-calendar"></span>
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="EndTime">End Time</label>
+                            <div class='input-group date' style="width:800px;" id='end_time'>
+                                <input type='text' class="form-control" required="true" th:field="*{end_time}"  th:readonly="${enableEdit}"
+                                       ng-model="dateString"  />
+                                <span class="input-group-addon">
+                                    <span class="glyphicon glyphicon-calendar"></span>
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="isFrameValidity">Enable Frame Validity</label>
+                            <input   type="checkbox"   th:checked="${isFrameValidity}" 
+                                     th:field="*{isFrameValidity}"
+                                     th:disabled="${enableEdit}"
+                                     style="width:100px;" id="isFrameValidity" />
+                        </div>
+
+                        <div class="form-group">
+                            <label for="RestConstVal">Restrict Constant Validity</label>
+                            <input type="text" required="true" class="form-control" 
+                                   th:field="*{restrict_constant_validity}" 
+                                   th:readonly="${enableEdit}"
+                                   style="width:800px;" 
+                                   id="restrict_constant_validity" />
+                        </div> 
+
+                        <div class="form-group">
+                            <label for="FrameVal">Frame Time Validity</label>
+                            <input type="text" required="true" class="form-control" 
+                                   th:field="*{frame_time_validity}" 
+                                   th:readonly="${enableEdit}"
+                                   style="width:800px;" 
+                                   id="frame_time_validity" />
+                        </div> 
+                        
+                        <div class="form-group">
+                            <label for="Validity">Validity</label>
+                            <input type="text" required="true" class="form-control" 
+                                   th:field="*{validity}" 
+                                   th:readonly="${enableEdit}"
+                                   style="width:800px;" 
+                                   id="validity" />
+                        </div> 
+
+                        
+                        <div class="form-group">
+                            <label for="PendingDuration">Pending Duration</label>
+                            <input type="text" required="true" class="form-control" 
+                                   th:field="*{pending_duration}" 
+                                   th:readonly="${enableEdit}"
+                                   style="width:800px;" 
+                                   id="pending_duration" />
+                        </div> 
+                        
+                        <div class="form-group">
+                            <label for="isextend">Enable Extend</label>
+                            <input   type="checkbox"   th:checked="${isextend}" 
+                                     th:field="*{isextend}"
+                                     th:disabled="${enableEdit}"
+                                     style="width:100px;" id="isextend" />
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="isOveride_reg">Enable Override Registration</label>
+                            <input   type="checkbox"   th:checked="${isOveride_reg}" 
+                                     th:field="*{isOveride_reg}"
+                                     th:disabled="${enableEdit}"
+                                     style="width:100px;" id="isOveride_reg" />
+                        </div>
+                        
+                         <div class="form-group">
+                            <label for="isNotify_extend">Enable Extend Notification</label>
+                            <input   type="checkbox"   th:checked="${isNotify_extend}" 
+                                     th:field="*{isNotify_extend}"
+                                     th:disabled="${enableEdit}"
+                                     style="width:100px;" id="isNotify_extend" />
+                        </div>
+                        
+                        
+                        
+
+                        <div class="form-group">
+                            <label for="ExtendFee">Extend Fee</label>
+                            <input type="number"  class="form-control" th:field="*{extend_fee}"  th:readonly="${enableEdit}" 
+                                   style="width:800px;" id="extend_fee" />
+                        </div>
+
+                        
+
+                        <div class="form-group">
+                            <label for="Description">Description</label>
+                            <input type="text" class="form-control" th:field="*{description}"  th:readonly="${enableEdit}" style="width:800px;" id="description" />
+                        </div>
+                    </div>
+                    <div class="box-footer">
+                        <span th:unless="${enableVisibility}">
+                            <button class="btn btn-primary" style="width:100px;"  name="action" value="save"  type="submit">Save</button>
+                        </span>
+                        <span th:if="${enableVisibility}">
+                            <button class="btn btn-primary" style="width:100px;"  name="action" value="edit" type="submit">Edit</button>
+                        </span>
+
+                    </div>
+                </form>
+            </div>
+        </div>
+    </body>
+</html>
