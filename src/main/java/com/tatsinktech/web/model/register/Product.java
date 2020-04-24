@@ -69,7 +69,7 @@ public class Product extends AbstractModel<Long> {
        from start_time to end_time and only allow in the frame time by day 
      */
     @Column(nullable = true)
-    private boolean isFrameValidity = true;
+    private boolean isFrameValidity = false;
 
     /*  the Day or hour where customer is not allow to get the service.
         following the type of constant validity (D or H). we must set information as following : 
@@ -92,13 +92,13 @@ public class Product extends AbstractModel<Long> {
     private String pending_duration;
 
     @Column(nullable = true)
-    private boolean isextend = true;
+    private boolean isExtend = true;
 
     @Column(nullable = true)
     private boolean isOveride_reg = true;
 
     @Column(nullable = true)
-    private boolean isNotify_extend = false;
+    private boolean isNotify_extend = true;
 
     @Column(nullable = true)
     private long extend_fee;
@@ -134,6 +134,14 @@ public class Product extends AbstractModel<Long> {
         this.isFrameValidity = isFrameValidity;
     }
 
+    public boolean isIsExtend() {
+        return isExtend;
+    }
+
+    public void setIsExtend(boolean isExtend) {
+        this.isExtend = isExtend;
+    }
+
     public boolean isIsOveride_reg() {
         return isOveride_reg;
     }
@@ -149,7 +157,6 @@ public class Product extends AbstractModel<Long> {
     public void setIsNotify_extend(boolean isNotify_extend) {
         this.isNotify_extend = isNotify_extend;
     }
-    
-    
+
 
 }

@@ -5,11 +5,10 @@
  */
 package com.tatsinktech.web.controller;
 
-import com.tatsinktech.web.model.register.Promotion;
 import com.tatsinktech.web.model.register.ServiceProvider;
 import com.tatsinktech.web.service.ServiceProviderService;
-import java.util.Optional;
-import java.util.logging.Level;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 import javax.validation.constraints.NotNull;
 import org.keycloak.adapters.springsecurity.account.SimpleKeycloakAccount;
@@ -38,6 +37,7 @@ public class ServiceProviderController {
     private ServiceProviderService serviceProviderService;
     private boolean enable_edit = false;
     private boolean enable_visibility = false;
+    private List<Integer> listNumber = new ArrayList<Integer>();
 
     public boolean isEnable_edit() {
         return enable_edit;
@@ -58,12 +58,39 @@ public class ServiceProviderController {
     @Autowired
     public void setServiceProviderService(ServiceProviderService serviceProviderService) {
         this.serviceProviderService = serviceProviderService;
+        listNumber.clear();
+        listNumber.add(5);
+        listNumber.add(10);
+        listNumber.add(15);
+        listNumber.add(20);
+        listNumber.add(25);
+        listNumber.add(30);
     }
 
     @GetMapping
     public String index(@NotNull Model model, @NotNull Authentication auth) {
         loadMode(model, auth);
         return "redirect:/services/1";
+    }
+    
+    
+     @GetMapping(value = "/pageSize/{pageSize}")
+    public String listPageSize(@PathVariable Integer pageSize, @NotNull Model model, @NotNull Authentication auth) {
+        loadMode(model, auth);
+        Page<ServiceProvider> page = serviceProviderService.getPageSize(pageSize);
+
+        int current = page.getNumber() + 1;
+        int begin = Math.max(1, current - 5);
+        int end = Math.min(begin + 10, page.getTotalPages());
+
+        model.addAttribute("list", page);
+        model.addAttribute("beginIndex", begin);
+        model.addAttribute("endIndex", end);
+        model.addAttribute("currentIndex", current);
+        model.addAttribute("listNumber", listNumber);
+
+        return "services/list";
+
     }
 
     @GetMapping(value = "/{pageNumber}")
@@ -79,6 +106,7 @@ public class ServiceProviderController {
         model.addAttribute("beginIndex", begin);
         model.addAttribute("endIndex", end);
         model.addAttribute("currentIndex", current);
+        model.addAttribute("listNumber", listNumber);
 
         return "services/list";
 

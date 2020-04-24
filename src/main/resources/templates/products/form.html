@@ -36,7 +36,7 @@
 
                         <div class="form-group">
                             <label for="RegFee">Registration Fee</label>
-                            <input type="number"  class="form-control" th:field="*{reg_fee}"  th:readonly="${enableEdit}" 
+                            <input type="number"  class="form-control" th:field="*{reg_fee}"  required="true" th:readonly="${enableEdit}" 
                                    style="width:800px;" id="reg_fee" />
                         </div>
 
@@ -44,7 +44,7 @@
 
                         <div class="form-group">
                             <label for="Promo">Promotion</label>
-                            <select  class="form-control"  th:field="*{promotion.promotion_name}"   th:readonly="${enableEdit}" style="width:800px;"  id="promotion_filter" >
+                            <select  class="form-control"  th:field="*{promotion.promotion_name}" th:readonly="${enableEdit}" style="width:800px;"  id="promotion_filter" >
                                 <option th:value="'NONE'" th:text="NONE"></option>
                                 <option th:each="promo : ${listPromotion}"
                                         th:value="${promo.promotion_name}"
@@ -54,7 +54,7 @@
 
                         <div class="form-group">
                             <label for="Service">Service</label>
-                            <select  class="form-control"  th:field="*{service.service_name}"   th:readonly="${enableEdit}" style="width:800px;"  id="promotion_filter" >
+                            <select  class="form-control"  th:field="*{service.service_name}" required="true"  th:readonly="${enableEdit}" style="width:800px;"  id="promotion_filter" >
                                 <option th:value="'NONE'" th:text="NONE"></option>
                                 <option th:each="srv : ${listService}"
                                         th:value="${srv.service_name}"
@@ -64,7 +64,7 @@
 
                         <div class="form-group">
                             <label for="RestrictProduct">Product Restricted</label>
-                            <input type="text" required="true" class="form-control" 
+                            <input type="text"  class="form-control" 
                                    th:field="*{restrict_product}" 
                                    th:readonly="${enableEdit}"
                                    style="width:800px;" 
@@ -95,7 +95,7 @@
 
                         <div class="form-group">
                             <label for="isFrameValidity">Enable Frame Validity</label>
-                            <input   type="checkbox"   th:checked="${isFrameValidity}" 
+                            <input   type="checkbox"  th:checked="${isFrameValidity}" 
                                      th:field="*{isFrameValidity}"
                                      th:disabled="${enableEdit}"
                                      style="width:100px;" id="isFrameValidity" />
@@ -103,7 +103,7 @@
 
                         <div class="form-group">
                             <label for="RestConstVal">Restrict Constant Validity</label>
-                            <input type="text" required="true" class="form-control" 
+                            <input type="text" class="form-control" 
                                    th:field="*{restrict_constant_validity}" 
                                    th:readonly="${enableEdit}"
                                    style="width:800px;" 
@@ -112,7 +112,7 @@
 
                         <div class="form-group">
                             <label for="FrameVal">Frame Time Validity</label>
-                            <input type="text" required="true" class="form-control" 
+                            <input type="text"  class="form-control" 
                                    th:field="*{frame_time_validity}" 
                                    th:readonly="${enableEdit}"
                                    style="width:800px;" 
@@ -121,7 +121,7 @@
                         
                         <div class="form-group">
                             <label for="Validity">Validity</label>
-                            <input type="text" required="true" class="form-control" 
+                            <input type="text"  class="form-control" 
                                    th:field="*{validity}" 
                                    th:readonly="${enableEdit}"
                                    style="width:800px;" 
@@ -139,22 +139,18 @@
                         </div> 
                         
                         <div class="form-group">
-                            <label for="isextend">Enable Extend</label>
-                            <input   type="checkbox"   th:checked="${isextend}" 
-                                     th:field="*{isextend}"
+                            <label for="isExtend">Enable Extend</label>
+                            <input   type="checkbox"   th:checked="${isExtend}" 
+                                     th:field="*{isExtend}"
                                      th:disabled="${enableEdit}"
-                                     style="width:100px;" id="isextend" />
-                        </div>
+                                     style="width:100px;" id="isExtend" />
                         
-                        <div class="form-group">
                             <label for="isOveride_reg">Enable Override Registration</label>
                             <input   type="checkbox"   th:checked="${isOveride_reg}" 
                                      th:field="*{isOveride_reg}"
                                      th:disabled="${enableEdit}"
                                      style="width:100px;" id="isOveride_reg" />
-                        </div>
-                        
-                         <div class="form-group">
+                       
                             <label for="isNotify_extend">Enable Extend Notification</label>
                             <input   type="checkbox"   th:checked="${isNotify_extend}" 
                                      th:field="*{isNotify_extend}"

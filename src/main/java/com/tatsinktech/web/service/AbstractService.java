@@ -12,12 +12,18 @@ import java.util.Optional;
 
 public abstract class AbstractService<T extends AbstractModel<Long>, Long extends Serializable> {
 
-    private static final int PAGE_SIZE = 5;
+    private static final int PAGE_SIZE = 10;
 
     protected abstract JpaRepository<T, Long> getRepository();
 
     public Page<T> getList(Integer pageNumber) {
         PageRequest pageRequest = PageRequest.of(pageNumber - 1, PAGE_SIZE, Sort.Direction.ASC, "id");
+
+        return getRepository().findAll(pageRequest);
+    }
+
+    public Page<T> getPageSize(Integer pageSize) {
+        PageRequest pageRequest = PageRequest.of(0, pageSize, Sort.Direction.ASC, "id");
 
         return getRepository().findAll(pageRequest);
     }

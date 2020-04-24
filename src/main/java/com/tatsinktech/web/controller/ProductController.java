@@ -14,6 +14,7 @@ import com.tatsinktech.web.service.ProductService;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.logging.Level;
@@ -21,6 +22,7 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.validation.constraints.NotNull;
+import org.apache.commons.lang.StringUtils;
 import org.keycloak.adapters.springsecurity.account.SimpleKeycloakAccount;
 import org.keycloak.representations.AccessToken;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,16 +49,18 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class ProductController {
 
     private Logger logger = Logger.getLogger(this.getClass().getName());
-    
+
     private ProductService productService;
-    
+
+    private HashMap<String, Promotion> HashPomotion = new HashMap<String, Promotion>();
+    private HashMap<String, ServiceProvider> HashService = new HashMap<String, ServiceProvider>();
+
     @Autowired
     private PromotionRepository promotionRepository;
-    
+
     @Autowired
     private ServiceProviderRepository serviceProviderRepository;
-     
- 
+
     private boolean enable_edit = false;
     private boolean enable_visibility = false;
 
@@ -80,8 +84,7 @@ public class ProductController {
     public void setProductService(ProductService productService) {
         this.productService = productService;
     }
-    
-     
+
     @InitBinder
     public void initBinder(WebDataBinder binder) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
@@ -120,9 +123,20 @@ public class ProductController {
         enable_visibility = false;
         model.addAttribute("enableEdit", enable_edit);
         model.addAttribute("enableVisibility", enable_visibility);
-        
+
         List<Promotion> listPromotion = promotionRepository.findAll();
         List<ServiceProvider> listService = serviceProviderRepository.findAll();
+
+        HashPomotion.clear();
+        for (Promotion promo : listPromotion) {
+            HashPomotion.put(promo.getPromotion_name(), promo);
+        }
+
+        HashService.clear();
+        for (ServiceProvider serv : listService) {
+            HashService.put(serv.getService_name(), serv);
+        }
+
         model.addAttribute("listPromotion", listPromotion);
         model.addAttribute("listService", listService);
         model.addAttribute("product", new Product());
@@ -133,10 +147,16 @@ public class ProductController {
 
     @GetMapping("/edit/{id}")
     public String edit(@PathVariable Long id, @NotNull Model model, @NotNull Authentication auth) {
+        List<Promotion> listPromotion = promotionRepository.findAll();
+        List<ServiceProvider> listService = serviceProviderRepository.findAll();
+
         enable_edit = true;
         enable_visibility = true;
         model.addAttribute("enableEdit", enable_edit);
         model.addAttribute("enableVisibility", enable_visibility);
+        model.addAttribute("listPromotion", listPromotion);
+        model.addAttribute("listService", listService);
+
         model.addAttribute("product", productService.get(id));
         loadMode(model, auth);
         return "products/form";
@@ -149,35 +169,55 @@ public class ProductController {
         loadMode(model, auth);
 
         if (action.equals("save")) {
-
             if (Optional.ofNullable(entity.getStart_time()).isPresent() && Optional.ofNullable(entity.getEnd_time()).isPresent()) {
                 if (registerValidator(entity.getValidity()) && registerValidator(entity.getPending_duration())) {
-                    Pattern ptn = Pattern.compile("\\-");
-                    List<String> listTime = Arrays.asList(ptn.split(entity.getFrame_time_validity()));
-                    if (time24HoursValidator(listTime.get(0)) && time24HoursValidator(listTime.get(1))) {
-
+                    String frame_val = entity.getFrame_time_validity();
+                    if (checkFrameTime(frame_val)) {
                         try {
+                            String pro_name = entity.getPromotion().getPromotion_name();
+                            String serv_name = entity.getService().getService_name();
+
+                            Promotion pormo = null;
+                            ServiceProvider serv = null;
+
+                            if (!StringUtils.isBlank(pro_name) && !pro_name.equals("NONE")) {
+                                pormo = HashPomotion.get(pro_name);
+                            }
+
+                            if (!StringUtils.isBlank(serv_name) && !pro_name.equals("NONE")) {
+                                serv = HashService.get(serv_name);
+                            }
+
+                            entity.setPromotion(pormo);
+                            entity.setService(serv);
+
                             Product save = productService.save(entity);
                             ra.addFlashAttribute("successFlash", "Success Add New Service");
-                            logger.info("Success Add new Promoiton =  " + save);
+//                            logger.info("Success Add new Promoiton =  " + save);
                         } catch (Exception e) {
                             logger.log(Level.SEVERE, "Error to Add promotion", e);
                             model.addAttribute("invalidAdd_Promotion", true);
                         }
                         result = "redirect:/products";
                     } else {
+                        logger.info("Invalid Frame Time Validity");
+                        logger.info("entity =  " + entity);
                         model.addAttribute("errorMessage", "Invalid Frame Time Validity");
                         model.addAttribute("product", entity);
                         result = "redirect:/promotions/add";
                     }
 
                 } else {
+                    logger.info("Invalid Validity or Pending Duration Format ");
+                    logger.info("entity =  " + entity);
                     model.addAttribute("errorMessage", "Invalid Validity or Pending Duration Format");
                     model.addAttribute("product", entity);
                     result = "redirect:/promotions/add";
                 }
 
             } else {
+                logger.info("Invalid Start date or End date format");
+                logger.info("entity =  " + entity);
                 model.addAttribute("errorMessage", "Invalid Start date or End date format");
                 model.addAttribute("product", entity);
                 result = "redirect:/promotions/add";
@@ -231,18 +271,42 @@ public class ProductController {
         model.addAttribute("keycloak_phone", phone_number);
     }
 
+    private boolean checkFrameTime(String frame_time) {
+        if (!StringUtils.isBlank(frame_time)) {
+            Pattern ptn = Pattern.compile("\\-");
+            List<String> listTime = Arrays.asList(ptn.split(frame_time));
+            if (time24HoursValidator(listTime.get(0)) && time24HoursValidator(listTime.get(1))) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return true;
+        }
+    }
+
     private boolean time24HoursValidator(String time_hour) {
-        String TIME24HOURS_PATTERN = "([01]?[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]";
-        Pattern pattern = Pattern.compile(TIME24HOURS_PATTERN);
-        Matcher matcher = pattern.matcher(time_hour);
-        return matcher.matches();
+        if (!StringUtils.isBlank(time_hour)) {
+            String TIME24HOURS_PATTERN = "([01]?[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]";
+            Pattern pattern = Pattern.compile(TIME24HOURS_PATTERN);
+            Matcher matcher = pattern.matcher(time_hour);
+            return matcher.matches();
+        } else {
+            return true;
+        }
+
     }
 
     private boolean registerValidator(String periode) {
-        String regex_string = "^(D|H)([0-9])*";
-        Pattern pattern = Pattern.compile(regex_string);
-        Matcher matcher = pattern.matcher(periode);
-        return matcher.matches();
+        if (!StringUtils.isBlank(periode)) {
+            String regex_string = "^(D|H)([0-9])*";
+            Pattern pattern = Pattern.compile(regex_string);
+            Matcher matcher = pattern.matcher(periode);
+            return matcher.matches();
+        } else {
+            return true;
+        }
+
     }
 
 }
