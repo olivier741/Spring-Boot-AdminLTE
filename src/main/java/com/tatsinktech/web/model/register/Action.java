@@ -42,11 +42,12 @@ import org.hibernate.annotations.UpdateTimestamp;
 @Table(name = "action",uniqueConstraints={@UniqueConstraint(columnNames = {"action_type","product_id"})})
 public class Action extends AbstractModel<Long>  {
 
-    @Column(nullable = false, unique = true)
-    private String action_name;
+    @Column(name = "action_name",nullable = false, unique = true)
+    private String actionName;
     
     @Enumerated(EnumType.STRING)
-    private Action_Type action_type;
+    @Column(name = "action_type")
+    private Action_Type actionType;
     
 
     @ManyToOne(fetch = FetchType.EAGER)

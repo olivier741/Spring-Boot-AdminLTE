@@ -2,14 +2,14 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="layout">
     <head>
-        <title>ADD PROMOTIONS</title>
+        <title>DELETE PROMOTION</title>
     </head>
     <body>
         <section layout:fragment="header">
             <h1>PROMOTIONS</h1>
             <ol class="breadcrumb">
                 <li><a href="/"><i class="fa fa-dashboard"></i> Home</a></li>
-                <li class="active">ADD PROMOTIONS</li>
+                <li class="active">DELETE PROMOTION</li>
             </ol>
         </section>
         <div layout:fragment="content">
@@ -20,9 +20,10 @@
                         <a href="/promotions/list" type="button" class="btn btn-box-tool"><i class="fa fa-list-ul"></i></a>
                     </div>
                 </div>
-                <form data-toggle="validator" role="form" th:object="${promo}" th:action="@{/promotions/form}" method="post">
+                <form data-toggle="validator" role="form" th:object="${promo}" th:action="@{/promotions/delete}" method="post">
                     <div class="box-body">
                         <input type="hidden" th:field="*{id}"/>
+
 
                         <div class="form-group">
                             <label for="PromotionName">Promotion Name</label>
@@ -124,12 +125,8 @@
                         <a th:href="@{/promotions/list}" class="btn btn-default" role="button" title="Back list">
                             <span aria-hidden="true"></span>Back To List
                         </a>
-                        <span th:if="${enableSave}">
-                            <button type="submit" class="box-title btn btn-primary" name="action" value="save" title="Save Data">Save</button>
-                        </span>
-                        <span th:unless="${enableSave}">
-                            <button type="submit" class="box-title btn btn-primary" name="action" value="update" title="Update Data">Update</button>
-                        </span>
+
+                        <button type="submit" class="btn btn-danger"  title="Delete Data">Delete</button>
 
                     </div>
                 </form>

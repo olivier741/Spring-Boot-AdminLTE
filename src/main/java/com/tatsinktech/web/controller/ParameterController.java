@@ -5,17 +5,13 @@
  */
 package com.tatsinktech.web.controller;
 
-
-import com.tatsinktech.web.model.register.Promotion;
-import com.tatsinktech.web.repository.PromotionRepository;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import com.tatsinktech.web.model.register.Parameter;
+import com.tatsinktech.web.repository.ParameterRepository;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import org.keycloak.adapters.springsecurity.account.SimpleKeycloakAccount;
 import org.keycloak.representations.AccessToken;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -24,9 +20,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,20 +30,18 @@ import org.springframework.web.servlet.ModelAndView;
 
 /**
  *
- * @author olivier.tatsinkou
+ * @author olivier
  */
 @Controller
-@RequestMapping("promotions")
-public class PromotionController {
+@RequestMapping("parameters")
+public class ParameterController {
 
     private boolean enableSave = true;
     private boolean enableEdit = true;
 
     @Autowired
-    private PromotionRepository promoRepo;
-    
-    
-   
+    private ParameterRepository parameterRepo;
+
     public boolean isEnableSave() {
         return enableSave;
     }
@@ -66,85 +58,73 @@ public class PromotionController {
         this.enableEdit = enableEdit;
     }
     
-    @InitBinder
-    public void initBinder(WebDataBinder binder) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-        dateFormat.setLenient(false);
-        binder.registerCustomEditor(Date.class, new CustomDateEditor(dateFormat, true));
-
-    } 
-
-     
+    
 
     @GetMapping("/list")
-    public ModelMap getlist(@PageableDefault(size = 10) Pageable pageable,
-            @RequestParam(name = "value", required = false) String value,
-            Model model, @NotNull Authentication auth) {
-        
+    public ModelMap getlist(@PageableDefault(size = 10) Pageable pageable, @RequestParam(name = "value", required = false) String value, Model model, @NotNull Authentication auth) {
         loadMode(model, auth);
         if (value != null) {
             model.addAttribute("key", value);
-            return new ModelMap().addAttribute("promotions", promoRepo.findByPromotionNameContainingIgnoreCase(value, pageable));
+            return new ModelMap().addAttribute("parameters", parameterRepo.findByParamNameContainingIgnoreCase(value, pageable));
         } else {
-            return new ModelMap().addAttribute("promotions", promoRepo.findAll(pageable));
+            return new ModelMap().addAttribute("parameters", parameterRepo.findAll(pageable));
         }
     }
 
     @GetMapping("/form")
     public ModelMap getForm(@RequestParam(value = "id", required = false) Long id, Model model, @NotNull Authentication auth) {
         loadMode(model, auth);
-        Promotion entity = new Promotion();
+        Parameter param = new Parameter();
         enableSave = true;
         if (id != null) {
             enableSave = false;
-            entity = promoRepo.findPromotionById(id);
+            param = parameterRepo.findParameterById(id);
         }
 
         model.addAttribute("enableSave", enableSave);
 
-        return new ModelMap("promo", entity);
+        return new ModelMap("param", param);
     }
 
     @PostMapping("/form")
-    public String postForm(@Valid @ModelAttribute("promo") Promotion entity,
+    public String postForm(@Valid @ModelAttribute("param") Parameter entity,
             BindingResult errors, SessionStatus status, Model model, @NotNull Authentication auth) {
         loadMode(model, auth);
-        
         if (errors.hasErrors()) {
-            return "promotions/form";
+            return "parameters/form";
         }
 
-        promoRepo.save(entity);
+        parameterRepo.save(entity);
         status.setComplete();
-        return "redirect:/promotions/list";
+        return "redirect:/parameters/list";
 
     }
 
     @GetMapping("/delete")
     public ModelMap getDelete(@RequestParam(value = "id", required = true) long id, Model model, @NotNull Authentication auth) {
         loadMode(model, auth);
-        Promotion entity = promoRepo.findPromotionById(id);
+        Parameter entity = parameterRepo.findParameterById(id);
         enableEdit = true;
 
         model.addAttribute("enableEdit", enableEdit);
-        return new ModelMap("promo", entity);
+        return new ModelMap("param", entity);
     }
 
     @PostMapping("/delete")
-    public Object postDelete(@Valid @ModelAttribute("promo") Promotion entity, SessionStatus status, Model model, @NotNull Authentication auth) {
+    public Object postDelete(@Valid @ModelAttribute("param") Parameter entity, SessionStatus status, Model model, @NotNull Authentication auth) {
         loadMode(model, auth);
         try {
-            promoRepo.delete(entity);
+            parameterRepo.delete(entity);
         } catch (DataIntegrityViolationException exception) {
             status.setComplete();
             return new ModelAndView("error/errorHapus")
-                    .addObject("entityId", entity.getPromotionName())
-                    .addObject("entityName", "promotions")
+                    .addObject("entityId", entity.getParamName())
+                    .addObject("entityName", "parameters")
                     .addObject("errorCause", exception.getRootCause().getMessage())
-                    .addObject("backLink", "/promotions/list");
+                    .addObject("backLink", "/parameters/list");
         }
         status.setComplete();
-        return "redirect:/promotions/list";
+        return "redirect:/parameters/list";
     }
 
     private void loadMode(Model model, Authentication auth) {

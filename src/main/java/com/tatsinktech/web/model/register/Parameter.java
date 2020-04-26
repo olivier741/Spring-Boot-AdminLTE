@@ -6,16 +6,10 @@
 package com.tatsinktech.web.model.register;
 
 import com.tatsinktech.web.model.AbstractModel;
-import java.io.Serializable;
-import java.sql.Timestamp;
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -24,8 +18,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
 /**
  *
@@ -37,18 +29,18 @@ import org.hibernate.annotations.UpdateTimestamp;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
+@ToString (exclude = "listCommand")
 @Table(name = "parameter")
 public class Parameter extends AbstractModel<Long> {
 
-    @Column(nullable = false, unique = true)
-    private String param_name;
+    @Column(name ="param_name",nullable = false, unique = true)
+    private String paramName;
 
-    @Column(nullable = true)
-    private int param_length;
+    @Column(name ="param_length",nullable = true)
+    private int paramLength;
 
-    @Column(nullable = true)
-    private String param_pattern;
+    @Column(name ="param_pattern",nullable = true)
+    private String paramPattern;
 
 
     @OneToMany(mappedBy = "parameter")

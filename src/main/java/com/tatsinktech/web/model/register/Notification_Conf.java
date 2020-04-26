@@ -42,12 +42,12 @@ import org.hibernate.annotations.UpdateTimestamp;
 @Table(name = "notification_conf")
 public class Notification_Conf extends AbstractModel<Long>{
        
-    @Column(nullable = false, unique = true)
-    private String nofication_name;
+    @Column(name= "nofication_name",nullable = false, unique = true)
+    private String noficationName;
     
-    @Column(nullable = true)
+    @Column(name= "nofication_value",nullable = true)
     @Lob
-    private String notification_value;
+    private String notificationValue;
     
     
     @ManyToOne(fetch = FetchType.EAGER)

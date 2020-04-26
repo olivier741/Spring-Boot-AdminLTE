@@ -33,11 +33,11 @@ public abstract class AbstractModel<Long extends Serializable> implements Serial
     
     @Column(nullable = true)
     @CreationTimestamp
-    private Timestamp create_time;
+    private Timestamp createTime;
     
     @Column(nullable = true)
     @UpdateTimestamp
-    private Timestamp update_time;
+    private Timestamp updateTime;
 
     public String getDescription() {
         return description;
@@ -47,23 +47,23 @@ public abstract class AbstractModel<Long extends Serializable> implements Serial
         this.description = description;
     }
 
-    public Timestamp getCreate_time() {
-        return create_time;
+    public Timestamp getCreateTime() {
+        return createTime;
     }
 
-    public void setCreate_time(Timestamp create_time) {
-        this.create_time = create_time;
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
     }
 
-    public Timestamp getUpdate_time() {
-        return update_time;
+    public Timestamp getUpdateTime() {
+        return updateTime;
     }
 
-    public void setUpdate_time(Timestamp update_time) {
-        this.update_time = update_time;
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
     }
-    
-    
+
+ 
 
     @Override
     public int hashCode() {

@@ -6,7 +6,10 @@
 package com.tatsinktech.web.repository;
 
 import com.tatsinktech.web.model.register.ServiceProvider;
-import org.springframework.data.jpa.repository.JpaRepository;
+import java.util.Date;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -14,7 +17,20 @@ import org.springframework.stereotype.Repository;
  * @author olivier
  */
 
-@Repository
-public interface ServiceProviderRepository extends JpaRepository<ServiceProvider, Long> {
 
+@Repository
+public interface ServiceProviderRepository extends PagingAndSortingRepository<ServiceProvider, String> {
+    ServiceProvider findServiceProviderById(long id);
+    Page<ServiceProvider>findByIdContainingIgnoreCase(long id, Pageable pageable);
+    
+    Page<ServiceProvider>findByServiceNameContainingIgnoreCase(String service_name, Pageable pageable);
+    Page<ServiceProvider>findByReceiveChannelContainingIgnoreCase(String receive_channel, Pageable pageable);
+    Page<ServiceProvider>findBySendChannelContainingIgnoreCase(String send_channel, Pageable pageable);
+    Page<ServiceProvider>findByServiceProviderContainingIgnoreCase(String service_provider, Pageable pageable);
+    
+    Page<ServiceProvider>findByDescriptionContainingIgnoreCase(String description, Pageable pageable);
+    Page<ServiceProvider>findByCreateTimeContainingIgnoreCase(Date create_time, Pageable pageable);
+    Page<ServiceProvider>findByUpdateTimeContainingIgnoreCase(Date update_time, Pageable pageable);
+    
+    
 }

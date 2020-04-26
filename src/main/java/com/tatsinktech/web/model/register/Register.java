@@ -8,6 +8,7 @@ package com.tatsinktech.web.model.register;
 import com.tatsinktech.web.model.AbstractModel;
 import javax.persistence.Entity;
 import java.sql.Timestamp;
+import javax.persistence.Column;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -21,7 +22,6 @@ import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.UpdateTimestamp;
 
-
 /**
  *
  * @author olivier
@@ -33,28 +33,49 @@ import org.hibernate.annotations.UpdateTimestamp;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-@Table(uniqueConstraints={@UniqueConstraint(columnNames = {"transaction_id","msisdn" , "product_id"})})
-public class Register extends AbstractModel<Long>{
+@Table(uniqueConstraints = {
+    @UniqueConstraint(columnNames = {"transaction_id", "msisdn", "product_id"})})
+public class Register extends AbstractModel<Long> {
 
-    private String transaction_id;
-    private String msisdn;        // 1 = active|active, 0 = active|cancel, 2=active|pending, -1=cancel|cancel (state in network|state in service)
+    @Column(name = "transaction_id")
+    private String transactionId;
+
+    @Column(name = "msisdn")
+    private String msisdn;
+
+    /**
+     * 1 = active|active, 
+     * 0 = active|cancel, 
+     * 2 = active|pending, 
+     * -1= cancel|cancel (state in network|state in service)
+     */
+    @Column(name = "status")
     private int status;
+
+    @Column(name = "autoextend")
     private boolean autoextend;
-    
-    private Timestamp reg_time;
-    
+
+    @Column(name = "reg_time")
+    private Timestamp regTime;
+
     @UpdateTimestamp
-    private Timestamp Renew_time;
-    
-    private Timestamp expire_time;
-    private Timestamp unreg_time;
-    private Timestamp cancel_time;
-    
-    private int number_reg;
-    
+    @Column(name = "renew_time")
+    private Timestamp renewTime;
+
+    @Column(name = "expire_time")
+    private Timestamp expireTime;
+
+    @Column(name = "unreg_time")
+    private Timestamp unregTime;
+
+    @Column(name = "cancel_time")
+    private Timestamp cancelTime;
+
+    @Column(name = "number_reg")
+    private int numberReg;
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "product_id", nullable = true)
     private Product product;
 
-   
 }

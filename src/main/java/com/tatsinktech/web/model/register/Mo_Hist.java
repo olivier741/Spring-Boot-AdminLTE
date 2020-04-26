@@ -28,7 +28,6 @@ import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.UpdateTimestamp;
 
-
 /**
  *
  * @author olivier
@@ -40,38 +39,61 @@ import org.hibernate.annotations.UpdateTimestamp;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class Mo_Hist extends AbstractModel<Long>  {
+public class Mo_Hist extends AbstractModel<Long> {
 
-    private String transaction_id;
+    @Column(name = "transaction_id")
+    private String transactionId;
+
+    @Column(name = "msisdn")
     private String msisdn;
+
+    @Column(name = "content")
     private String content;
-    
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "command_id", nullable = true)
-    private Command command;
-    
+
+    @Column(name = "channel")
     private String channel;
-    
-    private Timestamp receive_time;
-    
+
+    @Column(name = "receive_time")
+    private Timestamp receiveTime;
+
     @UpdateTimestamp
-    private Timestamp process_time;
-    
+    @Column(name = "process_time")
+    private Timestamp processTime;
+
     @Enumerated(EnumType.STRING)
-    private Action_Type action_type;
-    
-    private long charge_fee;
-    private int charge_status;
-    private String charge_error;
-    private Timestamp charge_time;
+    @Column(name = "action_type")
+    private Action_Type actionType;
+
+    @Column(name = "charge_fee")
+    private long chargeFee;
+
+    @Column(name = "charge_status")
+    private int chargeStatus;
+
+    @Column(name = "charge_error")
+    private String chargeError;
+
+    @Column(name = "charge_time")
+    private Timestamp chargeTime;
+
+    @Column(name = "duration")
     private long duration;
-    private String process_unit;
-    private String IP_unit;
-    private String error_description;
-    
+
+    @Column(name = "process_unit")
+    private String processUnit;
+
+    @Column(name = "Ip_address")
+    private String IpAddress;
+
+    @Column(name = "erro_description")
+    private String erroDescription;
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "product_id", nullable = true)
     private Product product;
 
-    
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "command_id", nullable = true)
+    private Command command;
+
 }

@@ -6,24 +6,32 @@
 package com.tatsinktech.web.controller;
 
 import com.tatsinktech.web.model.register.ServiceProvider;
-import com.tatsinktech.web.service.ServiceProviderService;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Logger;
+import com.tatsinktech.web.repository.ServiceProviderRepository;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import org.keycloak.adapters.springsecurity.account.SimpleKeycloakAccount;
 import org.keycloak.representations.AccessToken;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
+import org.springframework.beans.propertyeditors.CustomDateEditor;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.bind.support.SessionStatus;
+import org.springframework.web.servlet.ModelAndView;
 
 /**
  *
@@ -33,136 +41,104 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @RequestMapping("services")
 public class ServiceProviderController {
 
-    private Logger logger = Logger.getLogger(this.getClass().getName());
-    private ServiceProviderService serviceProviderService;
-    private boolean enable_edit = false;
-    private boolean enable_visibility = false;
-    private List<Integer> listNumber = new ArrayList<Integer>();
-
-    public boolean isEnable_edit() {
-        return enable_edit;
-    }
-
-    public void setEnable_edit(boolean enable_edit) {
-        this.enable_edit = enable_edit;
-    }
-
-    public boolean isEnable_visibility() {
-        return enable_visibility;
-    }
-
-    public void setEnable_visibility(boolean enable_visibility) {
-        this.enable_visibility = enable_visibility;
-    }
+    private boolean enableSave = true;
+    private boolean enableEdit = true;
 
     @Autowired
-    public void setServiceProviderService(ServiceProviderService serviceProviderService) {
-        this.serviceProviderService = serviceProviderService;
-        listNumber.clear();
-        listNumber.add(5);
-        listNumber.add(10);
-        listNumber.add(15);
-        listNumber.add(20);
-        listNumber.add(25);
-        listNumber.add(30);
+    private ServiceProviderRepository serviceRepo;
+
+    public boolean isEnableSave() {
+        return enableSave;
     }
 
-    @GetMapping
-    public String index(@NotNull Model model, @NotNull Authentication auth) {
-        loadMode(model, auth);
-        return "redirect:/services/1";
+    public void setEnableSave(boolean enableSave) {
+        this.enableSave = enableSave;
+    }
+
+    public boolean isEnableEdit() {
+        return enableEdit;
+    }
+
+    public void setEnableEdit(boolean enableEdit) {
+        this.enableEdit = enableEdit;
     }
     
     
-     @GetMapping(value = "/pageSize/{pageSize}")
-    public String listPageSize(@PathVariable Integer pageSize, @NotNull Model model, @NotNull Authentication auth) {
-        loadMode(model, auth);
-        Page<ServiceProvider> page = serviceProviderService.getPageSize(pageSize);
 
-        int current = page.getNumber() + 1;
-        int begin = Math.max(1, current - 5);
-        int end = Math.min(begin + 10, page.getTotalPages());
-
-        model.addAttribute("list", page);
-        model.addAttribute("beginIndex", begin);
-        model.addAttribute("endIndex", end);
-        model.addAttribute("currentIndex", current);
-        model.addAttribute("listNumber", listNumber);
-
-        return "services/list";
-
+//    @InitBinder
+//    public void initBinder(WebDataBinder binder) {
+//        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+//        dateFormat.setLenient(false);
+//        binder.registerCustomEditor(Date.class, new CustomDateEditor(dateFormat, true));
+//
+//    }
+    @GetMapping("/list")
+    public ModelMap getlist(@PageableDefault(size = 10) Pageable pageable, @RequestParam(name = "value", required = false) String value, Model model, @NotNull Authentication auth) {
+       loadMode(model, auth);
+        if (value != null) {
+            model.addAttribute("key", value);
+            return new ModelMap().addAttribute("services", serviceRepo.findByServiceNameContainingIgnoreCase(value, pageable));
+        } else {
+            return new ModelMap().addAttribute("services", serviceRepo.findAll(pageable));
+        }
     }
 
-    @GetMapping(value = "/{pageNumber}")
-    public String list(@PathVariable Integer pageNumber, @NotNull Model model, @NotNull Authentication auth) {
-        loadMode(model, auth);
-        Page<ServiceProvider> page = serviceProviderService.getList(pageNumber);
-
-        int current = page.getNumber() + 1;
-        int begin = Math.max(1, current - 5);
-        int end = Math.min(begin + 10, page.getTotalPages());
-
-        model.addAttribute("list", page);
-        model.addAttribute("beginIndex", begin);
-        model.addAttribute("endIndex", end);
-        model.addAttribute("currentIndex", current);
-        model.addAttribute("listNumber", listNumber);
-
-        return "services/list";
-
-    }
-
-    @GetMapping("/add")
-    public String add(@NotNull Model model, @NotNull Authentication auth) {
-        enable_edit = false;
-        enable_visibility = false;
-        model.addAttribute("enableEdit", enable_edit);
-        model.addAttribute("enableVisibility", enable_visibility);
-        model.addAttribute("srv", new ServiceProvider());
-        loadMode(model, auth);
-        return "services/form";
-
-    }
-
-    @GetMapping("/edit/{id}")
-    public String edit(@PathVariable Long id, @NotNull Model model, @NotNull Authentication auth) {
-        enable_edit = true;
-        enable_visibility = true;
-        model.addAttribute("enableEdit", enable_edit);
-        model.addAttribute("enableVisibility", enable_visibility);
-        model.addAttribute("srv", serviceProviderService.get(id));
-        loadMode(model, auth);
-        return "services/form";
-
-    }
-
-    @PostMapping(value = "/save")
-    public String save(ServiceProvider entity, final RedirectAttributes ra, @NotNull Model model, @NotNull Authentication auth, @RequestParam(value = "action", required = true) String action) {
-        String result = "/";
-        loadMode(model, auth);
-
-        if (action.equals("save")) {
-            ServiceProvider save = serviceProviderService.save(entity);
-            ra.addFlashAttribute("successFlash", "Success Add New Service");
-            result = "redirect:/services";
-        } else if (action.equals("edit")) {
-            enable_edit = false;
-            enable_visibility = false;
-            model.addAttribute("enableEdit", enable_edit);
-            model.addAttribute("enableVisibility", enable_visibility);
-            model.addAttribute("srv", entity);
-            result = "services/form";
+    @GetMapping("/form")
+    public ModelMap getForm(@RequestParam(value = "id", required = false) Long id, Model model, @NotNull Authentication auth) {
+       loadMode(model, auth);
+        ServiceProvider entity = new ServiceProvider();
+        enableSave = true;
+        if (id != null) {
+            enableSave = false;
+            entity = serviceRepo.findServiceProviderById(id);
         }
 
-        return result;
+        model.addAttribute("enableSave", enableSave);
+
+        return new ModelMap("srv", entity);
     }
 
-    @GetMapping("/delete/{id}")
-    public String delete(@PathVariable Long id, @NotNull Model model, @NotNull Authentication auth) {
-        loadMode(model, auth);
-        serviceProviderService.delete(id);
-        return "redirect:/services";
+    @PostMapping("/form")
+    public String postForm(@Valid @ModelAttribute("srv") ServiceProvider entity, @RequestParam(value = "action", required = true) String action,
+            BindingResult errors, SessionStatus status, Model model, @NotNull Authentication auth) {
 
+        loadMode(model, auth);
+        if (errors.hasErrors()) {
+            return "services/form";
+        }
+
+        serviceRepo.save(entity);
+        status.setComplete();
+        return "redirect:/services/list";
+
+    }
+
+    @GetMapping("/delete")
+    public ModelMap getDelete(@RequestParam(value = "id", required = true) long id, Model model, @NotNull Authentication auth) {
+
+        loadMode(model, auth);
+        ServiceProvider entity = serviceRepo.findServiceProviderById(id);
+        
+        enableEdit = true;
+        model.addAttribute("enableEdit", enableEdit);
+        return new ModelMap("srv", entity);
+    }
+
+    @PostMapping("/delete")
+    public Object postDelete(@Valid @ModelAttribute("srv") ServiceProvider entity, SessionStatus status, Model model, @NotNull Authentication auth) {
+        loadMode(model, auth);
+        try {
+            serviceRepo.delete(entity);
+        } catch (DataIntegrityViolationException exception) {
+            status.setComplete();
+            return new ModelAndView("error/errorHapus")
+                    .addObject("entityId", entity.getServiceName())
+                    .addObject("entityName", "services")
+                    .addObject("errorCause", exception.getRootCause().getMessage())
+                    .addObject("backLink", "/services/list");
+        }
+        status.setComplete();
+        return "redirect:/services/list";
     }
 
     private void loadMode(Model model, Authentication auth) {
@@ -192,5 +168,4 @@ public class ServiceProviderController {
         model.addAttribute("keycloak_nickname", nickName);
         model.addAttribute("keycloak_phone", phone_number);
     }
-
 }

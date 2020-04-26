@@ -45,30 +45,30 @@ import org.hibernate.annotations.UpdateTimestamp;
 @Check(constraints = "reg_fee >= 0 AND extend_fee >= 0")
 public class Product extends AbstractModel<Long> {
 
-    @Column(nullable = false, unique = true)
-    private String product_code;
+    @Column(name="product_code",nullable = false, unique = true)
+    private String productCode;
 
-    @Column(nullable = true)
-    private long reg_fee;
+    @Column(name="reg_fee",nullable = true)
+    private long regFee;
 
     // list of restric product separate by | (e.g : CAN1|CAN2)
-    @Column(nullable = true)
-    private String restrict_product;
+    @Column(name="restrict_product",nullable = true)
+    private String restrictProduct;
 
     //  2019-04-16 23:00:01-07:00:00  this offer will launch  the 2019-04-16 at 11PM 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(nullable = true)
-    public Date start_time;
+    @Column(name="start_time",nullable = true)
+    public Date startTime;
 
     //  2050-04-16 23:00:01-07:00:00  this offer will end  the 2050-04-16 at 11PM 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(nullable = true)
-    public Date end_time;
+    @Column(name="end_time",nullable = true)
+    public Date endTime;
 
     /* This allow to select the thype of validity : Frame or Constant. Frame validity is the validity which go
        from start_time to end_time and only allow in the frame time by day 
      */
-    @Column(nullable = true)
+    @Column(name="isFrame_validity",nullable = true)
     private boolean isFrameValidity = false;
 
     /*  the Day or hour where customer is not allow to get the service.
@@ -76,32 +76,32 @@ public class Product extends AbstractModel<Long> {
         - (1|2|3) 0-Sunday, 1-Monday, 2-Tuesday, 3-Wednesday, ... not information mean registration every day'
         - (1|2) 00:00 to 00:59 , 01:00 to 01:59,  ... not information mean registration every time'
      */
-    @Column(nullable = true)
-    private String restrict_constant_validity;
+    @Column(name="restrict_constant_validity",nullable = true)
+    private String restrictConstantValidity;
 
     //  07:00:00-13:00:00  this validy will allow service from 07AM to 01PM
-    @Column(nullable = true)
-    private String frame_time_validity;
+    @Column(name="frame_time_validity",nullable = true)
+    private String frameTimeValidity;
 
     // D1 mean customer must have this offer for one Day, H5 mean customer must have this offer for 5 hours
-    @Column(nullable = true)
+    @Column(name="validity",nullable = true)
     private String validity;
 
     // D30 mean customer pending 30 Day on this offert, he is cancel (system will not try to extend) 
-    @Column(nullable = true)
-    private String pending_duration;
+    @Column(name="pending_duration",nullable = true)
+    private String pendingDuration;
 
-    @Column(nullable = true)
+    @Column(name="isExtend",nullable = true)
     private boolean isExtend = true;
 
-    @Column(nullable = true)
-    private boolean isOveride_reg = true;
+    @Column(name="isOveride_reg",nullable = true)
+    private boolean isOverideReg = true;
 
-    @Column(nullable = true)
-    private boolean isNotify_extend = true;
+     @Column(name="isNotify_extend",nullable = true)
+    private boolean isNotifyExtend = true;
 
-    @Column(nullable = true)
-    private long extend_fee;
+    @Column(name="extend_fee",nullable = true)
+    private long extendFee;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "promotion_id", nullable = true)
@@ -118,13 +118,13 @@ public class Product extends AbstractModel<Long> {
     private Set<Register> listRegister = new HashSet<>();
 
     @OneToMany(mappedBy = "product")
-    private Set<Charge_Hist> listCharge_Hist = new HashSet<>();
+    private Set<Charge_Hist> listChargeHist = new HashSet<>();
 
     @OneToMany(mappedBy = "product")
-    private Set<Mo_Hist> listMo_Hist = new HashSet<>();
+    private Set<Mo_Hist> listMoHist = new HashSet<>();
 
     @OneToMany(mappedBy = "product")
-    private Set<Mt_Hist> listMt_Hist = new HashSet<>();
+    private Set<Mt_Hist> listMtHist = new HashSet<>();
 
     public boolean isIsFrameValidity() {
         return isFrameValidity;
@@ -142,21 +142,23 @@ public class Product extends AbstractModel<Long> {
         this.isExtend = isExtend;
     }
 
-    public boolean isIsOveride_reg() {
-        return isOveride_reg;
+    public boolean isIsOverideReg() {
+        return isOverideReg;
     }
 
-    public void setIsOveride_reg(boolean isOveride_reg) {
-        this.isOveride_reg = isOveride_reg;
+    public void setIsOverideReg(boolean isOverideReg) {
+        this.isOverideReg = isOverideReg;
     }
 
-    public boolean isIsNotify_extend() {
-        return isNotify_extend;
+    public boolean isIsNotifyExtend() {
+        return isNotifyExtend;
     }
 
-    public void setIsNotify_extend(boolean isNotify_extend) {
-        this.isNotify_extend = isNotify_extend;
+    public void setIsNotifyExtend(boolean isNotifyExtend) {
+        this.isNotifyExtend = isNotifyExtend;
     }
+
+   
 
 
 }

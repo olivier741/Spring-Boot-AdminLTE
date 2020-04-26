@@ -41,27 +41,15 @@ import org.hibernate.annotations.UpdateTimestamp;
 @Table(name = "command",uniqueConstraints={@UniqueConstraint(columnNames = {"command_code","action_id"})})
 public class Command extends AbstractModel<Long> {
         
-    @Column(nullable = false, unique = true)
-    private String command_name;
+    @Column(name= "command_name",nullable = false, unique = true)
+    private String commandName;
     
-    @Column(nullable = false, unique = false)
-    private String command_code;
+    @Column(name = "command_code",nullable = false, unique = false)
+    private String commandCode;
     
-    @Column(nullable = true)
-    private String split_separator;
-     
-    @Column(nullable = true)
-    private String description;
-    
-    @Column(nullable = true)
-    @CreationTimestamp
-    private Timestamp create_time;
-    
-    @Column(nullable = true)
-    @UpdateTimestamp
-    private Timestamp update_time;
-   
-    
+    @Column(name = "split_separator",nullable = true)
+    private String splitSeparator;
+ 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "action_id", nullable = true)
     private Action action;

@@ -40,21 +40,21 @@ import org.hibernate.annotations.UpdateTimestamp;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
+@ToString (exclude = "listProduct")
 @Table(name = "service")
 public class ServiceProvider extends AbstractModel<Long> {
 
-    @Column(nullable = false, unique = true)
-    private String service_name;
+    @Column(name="service_name",nullable = false, unique = true)
+    private String serviceName;
     
-    @Column(nullable = true)
-    private String receive_channel;
+    @Column(name="receive_channel",nullable = true)
+    private String receiveChannel;
     
-    @Column(nullable = true)
-    private String send_channel;
+    @Column(name="send_channel",nullable = true)
+    private String sendChannel;
     
-    @Column(nullable = true)
-    private String service_provider;
+    @Column(name="service_provider",nullable = true)
+    private String serviceProvider;
     
 
     @OneToMany(mappedBy = "service")

@@ -7,7 +7,6 @@ package com.tatsinktech.web.model.register;
 
 import com.tatsinktech.web.model.AbstractModel;
 import javax.persistence.Entity;
-import java.sql.Timestamp;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -25,10 +24,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.Check;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.format.annotation.DateTimeFormat.ISO;
 
 
 /**
@@ -46,54 +41,46 @@ import org.springframework.format.annotation.DateTimeFormat.ISO;
 @Check(constraints = "promotion_reg_fee >= 0 and promotion_ext_fee >=0")
 public class Promotion extends AbstractModel<Long> {
     
-    @Column(nullable = false, unique = true)
-    private String promotion_name;
+    @Column(name ="promotion_name",nullable = false, unique = true)
+    private String promotionName;
     
     @Enumerated(EnumType.STRING)
-    private Promo_Filter promotion_filter;
+    @Column(name ="promotion_filter")
+    private Promo_Filter promotionFilter;
         
-    @Column(nullable = true)
-    private String msisdn_table;
+    @Column(name ="msisdn_table",nullable = true)
+    private String msisdnTable;
     
-    @Column(nullable = true)
-    private String msisdn_regex;
-    
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(nullable = true)
-    public Date start_time;
+    @Column(name ="msisdn_regex",nullable = true)
+    private String msisdnRegex;
     
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(nullable = true)
-    public Date end_time;
+    @Column(name ="start_time",nullable = true)
+    public Date startTime;
+    
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name ="end_time",nullable = true)
+    public Date endTime;
     
     @Enumerated(EnumType.STRING)
-    private Reduction_Type reduction_mode;
+    @Column(name ="reduction_mode",nullable = true)
+    private Reduction_Type reductionMode;
 
-    @Column(nullable = true)
-    private long promotion_reg_fee;
+    @Column(name ="promotion_reg_fee",nullable = true)
+    private long promotionRegFee;
     
-    @Column(nullable = true)
-    private long percentage_reg;
+    @Column(name ="percentage_reg",nullable = true)
+    private long percentageReg;
     
-    @Column(nullable = true)
+    @Column(name ="isExtend",nullable = true)
     private boolean isExtend;
     
-    @Column(nullable = true)
-    private long promotion_ext_fee;
+    @Column(name ="promotion_ext_fee",nullable = true)
+    private long promotionExtFee;
     
-    @Column(nullable = true)
-    private long percentage_ext;
+    @Column(name ="percentage_ext",nullable = true)
+    private long percentageExt;
     
-    @Column(nullable = true)
-    private String description;
-    
-    @Column(nullable = true)
-    @CreationTimestamp
-    private Timestamp create_time;
-    
-    @Column(nullable = true)
-    @UpdateTimestamp
-    private Timestamp update_time;
     
     @OneToMany(mappedBy = "promotion")
     protected Set<Product> listProduct = new HashSet<>();

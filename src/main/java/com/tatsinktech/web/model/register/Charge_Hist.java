@@ -11,6 +11,7 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import java.sql.Timestamp;
+import javax.persistence.Column;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Lob;
@@ -37,31 +38,43 @@ import org.hibernate.annotations.UpdateTimestamp;
 @Check(constraints = "charge_fee >= 0")
 public class Charge_Hist extends AbstractModel<Long> {
 
-    private String transaction_id;
+    @Column(name = "transaction_id")
+    private String transactionId;
     private String msisdn;
 
     @Enumerated(EnumType.STRING)
-    private Charge_Event charge_mode;
+    @Column(name = "charge_mode")
+    private Charge_Event chargeMode;
 
     @UpdateTimestamp
-    private Timestamp charge_time;
-    private long charge_fee;
+     @Column(name = "charge_time")
+    private Timestamp chargeTime;
+    
+    @Column(name = "charge_fee")
+    private long chargeFee;
 
     @Lob
-    private String charge_request;
+    @Column(name = "charge_request")
+    private String chargeRequest;
 
     @Lob
-    private String charge_response;
+    @Column(name = "charge_response")
+    private String chargeResponse;
 
+    @Column(name = "duration")
     private long duration;
 
-    private String charge_error;
+    @Column(name = "charge_error")
+    private String chargeError;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "product_id", nullable = true)
     private Product product;
 
-    private String process_unit;
-    private String IP_unit;
+    @Column(name = "process_unit")
+    private String processUnit;
+    
+    @Column(name = "Ip_address")
+    private String IpAddress;
 
 }

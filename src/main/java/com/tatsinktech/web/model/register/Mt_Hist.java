@@ -9,6 +9,7 @@ import com.tatsinktech.web.model.AbstractModel;
 import javax.persistence.Entity;
 import java.sql.Timestamp;
 import java.util.Objects;
+import javax.persistence.Column;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
@@ -34,17 +35,25 @@ import org.hibernate.annotations.UpdateTimestamp;
 @ToString
 public class Mt_Hist extends AbstractModel<Long>{
 
-    private String transaction_id;
+   @Column(name = "transaction_id")
+    private String transactionId;
+
+    @Column(name = "msisdn")
     private String msisdn;
     
     @Lob 
+    @Column(name = "message")
     private String message;
     
+    @Column(name = "channel")
     private String channel;
-    private Timestamp receive_time;
+    
+    @Column(name = "receive_time")
+    private Timestamp receiveTime;
     
     @UpdateTimestamp
-    private Timestamp send_time;
+    @Column(name = "send_time")
+    private Timestamp sendTime;
     
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "command_id", nullable = true)
@@ -54,7 +63,10 @@ public class Mt_Hist extends AbstractModel<Long>{
     @JoinColumn(name = "product_id", nullable = true)
     private Product product;
    
-    private String process_unit;
-    private String IP_unit;
+    @Column(name = "process_unit")
+    private String processUnit;
+
+    @Column(name = "Ip_address")
+    private String IpAddress;
 
 }
