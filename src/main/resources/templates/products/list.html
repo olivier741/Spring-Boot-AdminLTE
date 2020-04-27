@@ -67,9 +67,12 @@
                                     <td th:text="${#dates.format(row.startTime, 'yyyy-MM-dd HH:mm:ss')}"></td>
                                     <td th:text="${#dates.format(row.endTime, 'yyyy-MM-dd HH:mm:ss')}"></td>
                                     <td th:text="${row.isFrameValidity}"></td>
-                                    <td th:text="${row.pendingDuration}"></td>
-                                    <td th:text="${row.promotion.promotionName}"></td>
-                                     <td th:text="${row.service.serviceName}"></td>
+                                    <td th:text="${row.pendingDuration}"></td>                                 
+                                    <td th:if="${row.promotion != null}" th:text="${row.promotion.promotionName}"></td>
+                                    <td th:if="${row.promotion == null}" ></td>
+                                    
+                                    <td th:if="${row.service != null}" th:text="${row.service.serviceName}"></td>
+                                    <td th:if="${row.service == null}" ></td>
                                     <td th:text="${row.description}"></td>
                                     <td th:text="${#dates.format(row.createTime, 'yyyy-MM-dd HH:mm:ss')}"></td>
                                     <td th:text="${#dates.format(row.updateTime, 'yyyy-MM-dd HH:mm:ss')}"></td>

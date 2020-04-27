@@ -76,14 +76,6 @@ public class ActionController {
         this.enableEdit = enableEdit;
     }
 
-    @InitBinder
-    public void initBinder(WebDataBinder binder) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-        dateFormat.setLenient(false);
-        binder.registerCustomEditor(Date.class, new CustomDateEditor(dateFormat, true));
-
-    }
-
     @GetMapping("/list")
     public ModelMap getlist(@PageableDefault(size = 10) Pageable pageable,
             @RequestParam(name = "value", required = false) String value,
