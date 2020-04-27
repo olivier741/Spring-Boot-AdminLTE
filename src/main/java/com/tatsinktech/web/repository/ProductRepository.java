@@ -7,10 +7,10 @@ package com.tatsinktech.web.repository;
 
 import com.tatsinktech.web.model.register.Product;
 import com.tatsinktech.web.model.register.Promotion;
+import com.tatsinktech.web.model.register.ServiceProvider;
 import java.util.Date;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
@@ -37,9 +37,8 @@ public interface ProductRepository extends PagingAndSortingRepository<Product, S
     Page<Product>findByIsOverideRegContainingIgnoreCase(boolean isOverideReg, Pageable pageable);
     Page<Product>findByIsNotifyExtendContainingIgnoreCase(boolean isNotifyExtend, Pageable pageable);
     Page<Product>findByExtendFeeContainingIgnoreCase(long extendFee, Pageable pageable);
-    Page<Product>findByPromotionByPromotionNameContainingIgnoreCase(String promotion_name, Pageable pageable);
-    Page<Product>findByServiceByServiceNameContainingIgnoreCase(String service_name, Pageable pageable);
-    
+
+//    
     Page<Product>findByDescriptionContainingIgnoreCase(String description, Pageable pageable);
     Page<Product>findByCreateTimeContainingIgnoreCase(Date create_time, Pageable pageable);
     Page<Product>findByUpdateTimeContainingIgnoreCase(Date update_time, Pageable pageable);
