@@ -2,29 +2,30 @@
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="layout">
     <head>
-        <title>Actions</title>
+        <title>Notification Conf</title>
     </head>
     <body>
         <section layout:fragment="header">
-            <h1>List Actions</h1>
+            <h1>List Notifications</h1>
             <ol class="breadcrumb">
                 <li><a href="/"><i class="fa fa-dashboard"></i> Home</a></li>
-                <li class="active">Actions</li>
+                <li class="active">Notifications</li>
             </ol>
         </section>
         <div layout:fragment="content">
             <div class="box">
 
                 <div class="box-header with-border">
-                    <a class="box-title btn btn-primary" th:href="@{/actions/form}">ADD ACTION</a>
+                    <a class="box-title btn btn-primary" th:href="@{/notifications/form}">ADD NOTIFICATION</a>
+
 
                     <div class="box-tools">
-                        <form th:action="@{/actions/list}" method="get">
+                        <form th:action="@{/notifications/list}" method="get">
                             <div class="input-group input-group-sm" style="width: 250px;">
                                 <input type="text" name="value" class="form-control pull-right"
-                                       placeholder="search by product code" th:if="${key} == null"/>
+                                       placeholder="search by parameter Name" th:if="${key} == null"/>
                                 <input type="text" name="value" class="form-control pull-right"
-                                       placeholder="search by product code" th:if="${key} != null"
+                                       placeholder="search by parameter Name" th:if="${key} != null"
                                        th:value="${key}"/>
                                 <div class="input-group-btn">
                                     <button type="submit" class="btn btn-default"><i class="fa fa-search"></i></button>
@@ -34,6 +35,7 @@
                     </div>
                 </div>
 
+
                 <div class="box-body no-padding">
                     Show <span sd:page-size-selector="javascript"></span> entries
                     <div class="table-responsive">
@@ -41,33 +43,31 @@
                             <thead>
                                 <tr>
                                     <th><a class="fa fa-fw fa-sort"/><a class="sorted" sd:pagination-sort="id"/>ID</th>
-                                    <th><a class="fa fa-fw fa-sort"/><a class="sorted" sd:pagination-sort="actionName"/>Action Name</th>
-                                    <th><a class="fa fa-fw fa-sort"/><a class="sorted" sd:pagination-sort="actionType"/>Action Type</th>
-
-                                    <th>Product</th>
-                                    <th><a class="fa fa-fw fa-sort"/><a class="sorted" sd:pagination-sort="description"/>Descript</th>
+                                    <th><a class="fa fa-fw fa-sort"/><a class="sorted" sd:pagination-sort="noficationName"/>Notification Name</th>
+                                    <th>Notification Value</th>
+                                    <th>Default Value</th>
+                                    <th><a class="fa fa-fw fa-sort"/><a class="sorted" sd:pagination-sort="description"/>Description</th>
                                     <th><a class="fa fa-fw fa-sort"/><a class="sorted" sd:pagination-sort="createTime"/>Create Date</th>
                                     <th><a class="fa fa-fw fa-sort"/><a class="sorted" sd:pagination-sort="updateTime"/>Update Date</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr th:each="row : ${actions}">
+                                <tr th:each="row : ${notifications}">
                                     <td th:text="${row.id}"></td>
-                                    <td th:text="${row.actionName}"></td>
-                                    <td th:text="${row.actionType}"></td>
-                                    <td th:if="${row.product != null}" th:text="${row.product.productCode}"></td>
-                                    <td th:if="${row.product == null}" ></td>
+                                    <td  th:text="${row.noficationName}"></td>
+                                    <td width="150px" th:text="${row.notificationValue}"></td>
+                                    <td width="150px" th:text="${row.defaultValue}"></td>
                                     <td th:text="${row.description}"></td>
                                     <td th:text="${#dates.format(row.createTime, 'yyyy-MM-dd HH:mm:ss')}"></td>
                                     <td th:text="${#dates.format(row.updateTime, 'yyyy-MM-dd HH:mm:ss')}"></td>
                                     <td>
-                                        <a href="#" class="btn btn-default" th:href="@{/actions/form(id=${row.id})}"
+                                        <a href="#" class="btn btn-default" th:href="@{/notifications/form(id=${row.id})}"
                                            title="Edit Data"><span class="glyphicon glyphicon-edit"></span></a>
-                                        <a href="#" class="btn btn-default" th:href="@{/actions/delete(id=${row.id})}"
+                                        <a href="#" class="btn btn-default" th:href="@{/notifications/delete(id=${row.id})}"
                                            title="Delete Data"><span class="glyphicon glyphicon-trash"></span></a>
                                     </td>
                                 </tr>
-                                <tr th:if="${#lists.isEmpty(actions.content)}">
+                                <tr th:if="${#lists.isEmpty(notifications.content)}">
                                     <td colspan="13" class="text-center">No data</td>
                                 </tr>
                             </tbody>
@@ -75,7 +75,7 @@
                     </div>      
                 </div>
 
-                <div th:if="${not #lists.isEmpty(actions.content)}">
+                <div th:if="${not #lists.isEmpty(notifications.content)}">
 
                     <div sd:pagination-summary="">info</div>
                     <div class="text-center">

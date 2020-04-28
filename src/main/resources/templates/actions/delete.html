@@ -20,7 +20,7 @@
                         <a href="/actions/list" type="button" class="btn btn-box-tool"><i class="fa fa-list-ul"></i></a>
                     </div>
                 </div>
-                <form data-toggle="validator" role="form" th:object="${action}" th:action="@{/actions/delete}" method="post">
+                <form data-toggle="validator" role="form" th:object="${act}" th:action="@{/actions/delete}" method="post">
                     <div class="box-body">
                         <input type="hidden" th:field="*{id}"/>
 
@@ -36,8 +36,14 @@
 
                         <div class="form-group">
                             <label for="actionType">Action Type</label>
-                            <input type="number"  class="form-control" th:field="*{actionType}"  required="true" th:readonly="${enableEdit}" 
-                                   style="width:800px;" id="actionType" />
+                            <select  class="form-control" th:field="*{actionType}"  th:readonly="${enableEdit}" style="width:800px;"  id="actionType" >
+                                <option th:value="'NONE'" th:text="NONE"></option>
+                                <option th:value="'REGISTER'" th:text="REGISTER"></option>
+                                <option th:value="'DELETE'" th:text="DELETE"></option>
+                                <option th:value="'CHECK'" th:text="CHECK"></option>
+                                <option th:value="'GUIDE'" th:text="GUIDE"></option>
+                                <option th:value="'LIST_REG'" th:text="LIST_REG"></option>
+                            </select>
                         </div>
 
 

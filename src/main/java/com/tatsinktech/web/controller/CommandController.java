@@ -6,10 +6,16 @@
 package com.tatsinktech.web.controller;
 
 import com.tatsinktech.web.model.register.Action;
+import com.tatsinktech.web.model.register.Command;
+import com.tatsinktech.web.model.register.Parameter;
 import com.tatsinktech.web.model.register.Product;
+import com.tatsinktech.web.model.register.Promotion;
+import com.tatsinktech.web.model.register.ServiceProvider;
 import com.tatsinktech.web.repository.ActionRepository;
-import com.tatsinktech.web.repository.ProductRepository;
+import com.tatsinktech.web.repository.CommandRepository;
+import com.tatsinktech.web.repository.ParameterRepository;
 import java.util.HashMap;
+import java.util.Optional;
 import java.util.logging.Logger;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -35,24 +41,28 @@ import org.springframework.web.servlet.ModelAndView;
 
 /**
  *
- * @author olivier
+ * @author olivier.tatsinkou
  */
 @Controller
-@RequestMapping("actions")
-public class ActionController {
+@RequestMapping("commands")
+public class CommandController {
 
     private Logger logger = Logger.getLogger(this.getClass().getName());
 
-    private HashMap<String, Product> HashProduct = new HashMap<String, Product>();
+    private HashMap<String, Action> HashAction = new HashMap<String, Action>();
+    private HashMap<String, Parameter> HashParameter = new HashMap<String, Parameter>();
 
     private boolean enableSave = true;
     private boolean enableEdit = true;
 
     @Autowired
+    private CommandRepository commandRepo;
+
+    @Autowired
     private ActionRepository actionRepo;
 
     @Autowired
-    private ProductRepository productRepo;
+    private ParameterRepository parameterRepo;
 
     public boolean isEnableSave() {
         return enableSave;
@@ -78,71 +88,92 @@ public class ActionController {
         loadMode(model, auth);
         if (value != null) {
             model.addAttribute("key", value);
-            return new ModelMap().addAttribute("actions", actionRepo.findByActionNameContainingIgnoreCase(value, pageable));
+            return new ModelMap().addAttribute("commands", commandRepo.findByCommandNameContainingIgnoreCase(value, pageable));
         } else {
-            return new ModelMap().addAttribute("actions", actionRepo.findAll(pageable));
+            return new ModelMap().addAttribute("commands", commandRepo.findAll(pageable));
         }
     }
 
     @GetMapping("/form")
     public ModelMap getForm(@RequestParam(value = "id", required = false) Long id, Model model, @NotNull Authentication auth) {
         loadMode(model, auth);
-        Action entity = new Action();
+        Command entity = new Command();
         enableSave = true;
         if (id != null) {
             enableSave = false;
-            entity = actionRepo.findActionById(id);
+            entity = commandRepo.findCommandById(id);
         }
 
-        Iterable<Product> listProduct = productRepo.findAll();
+        Iterable<Action> listAction = actionRepo.findAll();
+        Iterable<Parameter> listParameter = parameterRepo.findAll();
 
-        HashProduct.clear();
-        for (Product prod : listProduct) {
-            HashProduct.put(prod.getProductCode(), prod);
+        HashAction.clear();
+        for (Action act : listAction) {
+            HashAction.put(act.getActionName(), act);
         }
 
-        model.addAttribute("listProduct", listProduct);
+        HashParameter.clear();
+        for (Parameter param1 : listParameter) {
+            HashParameter.put(param1.getParamName(), param1);
+        }
+
+        model.addAttribute("listAction", listAction);
+        model.addAttribute("listParameter", listParameter);
         model.addAttribute("enableSave", enableSave);
 
-        return new ModelMap("act", entity);
+        return new ModelMap("comd", entity);
     }
 
     @PostMapping("/form")
-    public String postForm(@Valid @ModelAttribute("act") Action entity,
+    public String postForm(@Valid @ModelAttribute("comd") Command entity,
             BindingResult errors, SessionStatus status, Model model, @NotNull Authentication auth) {
         loadMode(model, auth);
 
         boolean is_error = false;
-        String result = "actions/form";
-
+        String result = "commands/form";
         if (errors.hasErrors()) {
+
             is_error = true;
+
         }
 
-        String prod_name = entity.getProduct().getProductCode();
+        String action_name = entity.getAction().getActionName();
+        String param_name = entity.getParameter().getParamName();
 
-        Product prod = null;
+        Action act = null;
+        Parameter param0 = null;
 
-        if (!StringUtils.isBlank(prod_name) && !prod_name.equals("NONE")) {
-            prod = HashProduct.get(prod_name);
+        if (!StringUtils.isBlank(action_name) && !action_name.equals("NONE")) {
+            act = HashAction.get(action_name);
         }
 
-        entity.setProduct(prod);
+        if (!StringUtils.isBlank(param_name) && !param_name.equals("NONE")) {
+            param0 = HashParameter.get(param_name);
+        }
 
-        actionRepo.save(entity);
+        entity.setAction(act);
+        entity.setParameter(param0);
+
+        commandRepo.save(entity);
         status.setComplete();
-        result = "redirect:/actions/list";
+        result = "redirect:/commands/list";
 
         if (is_error) {
-            Iterable<Product> listProduct = productRepo.findAll();
+            Iterable<Action> listAction = actionRepo.findAll();
+            Iterable<Parameter> listParameter = parameterRepo.findAll();
 
-            HashProduct.clear();
-
-            for (Product prod1 : listProduct) {
-                HashProduct.put(prod1.getProductCode(), prod1);
+            HashAction.clear();
+            for (Action act1 : listAction) {
+                HashAction.put(act1.getActionName(), act1);
             }
 
-            model.addAttribute("listProduct", listProduct);
+            HashParameter.clear();
+            for (Parameter param1 : listParameter) {
+                HashParameter.put(param1.getParamName(), param1);
+            }
+
+            model.addAttribute("listAction", listAction);
+            model.addAttribute("listParameter", listParameter);
         }
 
         return result;
@@ -151,38 +182,44 @@ public class ActionController {
     @GetMapping("/delete")
     public ModelMap getDelete(@RequestParam(value = "id", required = true) long id, Model model, @NotNull Authentication auth) {
         loadMode(model, auth);
-        Action entity = actionRepo.findActionById(id);
+        Command entity = commandRepo.findCommandById(id);
         enableEdit = true;
 
-        Iterable<Product> listProduct = productRepo.findAll();
+         Iterable<Action> listAction = actionRepo.findAll();
+            Iterable<Parameter> listParameter = parameterRepo.findAll();
 
-        HashProduct.clear();
+            HashAction.clear();
+            for (Action act1 : listAction) {
+                HashAction.put(act1.getActionName(), act1);
+            }
 
-        for (Product prod : listProduct) {
-            HashProduct.put(prod.getProductCode(), prod);
-        }
+            HashParameter.clear();
+            for (Parameter param1 : listParameter) {
+                HashParameter.put(param1.getParamName(), param1);
+            }
 
-        model.addAttribute("listProduct", listProduct);
+            model.addAttribute("listAction", listAction);
+            model.addAttribute("listParameter", listParameter);
 
         model.addAttribute("enableEdit", enableEdit);
-        return new ModelMap("act", entity);
+        return new ModelMap("comd", entity);
     }
 
     @PostMapping("/delete")
-    public Object postDelete(@Valid @ModelAttribute("act") Action entity, SessionStatus status, Model model, @NotNull Authentication auth) {
+    public Object postDelete(@Valid @ModelAttribute("comd") Command entity, SessionStatus status, Model model, @NotNull Authentication auth) {
         loadMode(model, auth);
         try {
-            actionRepo.delete(entity);
+            commandRepo.delete(entity);
         } catch (DataIntegrityViolationException exception) {
             status.setComplete();
             return new ModelAndView("error/errorHapus")
-                    .addObject("entityId", entity.getActionName())
-                    .addObject("entityName", "actions")
+                    .addObject("entityId", entity.getCommandName())
+                    .addObject("entityName", "commands")
                     .addObject("errorCause", exception.getRootCause().getMessage())
-                    .addObject("backLink", "/actions/list");
+                    .addObject("backLink", "/commands/list");
         }
         status.setComplete();
-        return "redirect:/actions/list";
+        return "redirect:/commands/list";
     }
 
     private void loadMode(Model model, Authentication auth) {
@@ -212,5 +249,4 @@ public class ActionController {
         model.addAttribute("keycloak_nickname", nickName);
         model.addAttribute("keycloak_phone", phone_number);
     }
-
 }

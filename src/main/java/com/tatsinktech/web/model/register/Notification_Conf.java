@@ -40,19 +40,21 @@ import org.hibernate.annotations.UpdateTimestamp;
 @NoArgsConstructor
 @ToString
 @Table(name = "notification_conf")
-public class Notification_Conf extends AbstractModel<Long>{
-       
-    @Column(name= "nofication_name",nullable = false, unique = true)
+public class Notification_Conf extends AbstractModel<Long> {
+
+    @Column(name = "nofication_name", nullable = false, unique = true)
     private String noficationName;
-    
-    @Column(name= "nofication_value",nullable = true)
+
+    @Column(name = "nofication_value", nullable = true)
     @Lob
     private String notificationValue;
-    
-    
+
+    @Column(name = "default_value", nullable = true)
+    @Lob
+    private String defaultValue;
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "command_id", nullable = true)
     private Command command;
 
-   
 }

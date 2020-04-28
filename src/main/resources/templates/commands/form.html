@@ -1,0 +1,98 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="layout">
+    <head>
+        <title>ADD COMMAND</title>
+    </head>
+    <body>
+        <section layout:fragment="header">
+            <h1>COMMANDS</h1>
+            <ol class="breadcrumb">
+                <li><a href="/"><i class="fa fa-dashboard"></i> Home</a></li>
+                <li class="active">ADD COMMAND</li>
+            </ol>
+        </section>
+        <div layout:fragment="content">
+            <div class="box">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Form</h3>
+                    <div class="box-tools pull-right">
+                        <a href="/commands/list" type="button" class="btn btn-box-tool"><i class="fa fa-list-ul"></i></a>
+                    </div>
+                </div>
+                <form data-toggle="validator" role="form" th:object="${comd}" th:action="@{/commands/form}" method="post">
+                    <div class="box-body">
+                        <input type="hidden" th:field="*{id}"/>
+
+                        <div class="form-group">
+                            <label for="commandName">Command Name</label>
+                            <input type="text" required="true" class="form-control" 
+                                   th:field="*{commandName}" 
+                                   th:readonly="${enableEdit}"
+                                   style="width:800px;" 
+                                   id="commandName" />
+                        </div> 
+                        
+                          <div class="form-group">
+                            <label for="commandCode">Command Code</label>
+                            <input type="text" required="true" class="form-control" 
+                                   th:field="*{commandCode}" 
+                                   th:readonly="${enableEdit}"
+                                   style="width:800px;" 
+                                   id="commandCode" />
+                        </div> 
+                        
+                        
+                        <div class="form-group">
+                            <label for="splitSeparator">Split Separator</label>
+                            <input type="text"  class="form-control" 
+                                   th:field="*{splitSeparator}" 
+                                   th:readonly="${enableEdit}"
+                                   style="width:800px;" 
+                                   id="splitSeparator" />
+                        </div> 
+                        
+                       
+
+                        <div class="form-group">
+                            <label for="Action">Action</label>
+                            <select  class="form-control"  th:field="*{action.actionName}" th:readonly="${enableEdit}" style="width:800px;"  id="promotion_filter" >
+                                <option th:value="'NONE'" th:text="NONE"></option>
+                                <option th:each="act : ${listAction}"
+                                        th:value="${act.actionName}"
+                                        th:utext="${act.actionName}" />
+                            </select>
+                        </div>
+                        
+                         <div class="form-group">
+                            <label for="Parameter">Parameter</label>
+                            <select  class="form-control"  th:field="*{parameter.paramName}" th:readonly="${enableEdit}" style="width:800px;"  id="promotion_filter" >
+                                <option th:value="'NONE'" th:text="NONE"></option>
+                                <option th:each="param1 : ${listParameter}"
+                                        th:value="${param1.paramName}"
+                                        th:utext="${param1.paramName}" />
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="Description">Description</label>
+                            <input type="text" class="form-control" th:field="*{description}"  th:readonly="${enableEdit}" style="width:800px;" id="description" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <a th:href="@{/commands/list}" class="btn btn-default" role="button" title="Back list">
+                            <span aria-hidden="true"></span>Back To List
+                        </a>
+                        <span th:if="${enableSave}">
+                            <button type="submit" class="box-title btn btn-primary" name="action" value="save" title="Save Data">Save</button>
+                        </span>
+                        <span th:unless="${enableSave}">
+                            <button type="submit" class="box-title btn btn-primary" name="action" value="update" title="Update Data">Update</button>
+                        </span>
+
+                    </div>
+                </form>
+            </div>
+        </div>
+    </body>
+</html>
