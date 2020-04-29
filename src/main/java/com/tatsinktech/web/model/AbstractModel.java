@@ -6,7 +6,10 @@ import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.util.Date;
 import javax.persistence.Column;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -31,13 +34,14 @@ public abstract class AbstractModel<Long extends Serializable> implements Serial
     @Column(nullable = true)
     private String description;
     
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(nullable = true)
     @CreationTimestamp
-    private Timestamp createTime;
+    private Date createTime;
     
     @Column(nullable = true)
     @UpdateTimestamp
-    private Timestamp updateTime;
+    private Date updateTime;
 
     public String getDescription() {
         return description;
@@ -47,21 +51,23 @@ public abstract class AbstractModel<Long extends Serializable> implements Serial
         this.description = description;
     }
 
-    public Timestamp getCreateTime() {
+    public Date getCreateTime() {
         return createTime;
     }
 
-    public void setCreateTime(Timestamp createTime) {
+    public void setCreateTime(Date createTime) {
         this.createTime = createTime;
     }
 
-    public Timestamp getUpdateTime() {
+    public Date getUpdateTime() {
         return updateTime;
     }
 
-    public void setUpdateTime(Timestamp updateTime) {
+    public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
     }
+
+  
 
  
 

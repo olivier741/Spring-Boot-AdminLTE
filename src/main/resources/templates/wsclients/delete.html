@@ -2,14 +2,14 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="layout">
     <head>
-        <title>ADD PARAMETER</title>
+        <title>DELETE PARAMETER</title>
     </head>
     <body>
         <section layout:fragment="header">
             <h1>PARAMETERS</h1>
             <ol class="breadcrumb">
                 <li><a href="/"><i class="fa fa-dashboard"></i> Home</a></li>
-                <li class="active">ADD PARAMETER</li>
+                <li class="active">DELETE PARAMETER</li>
             </ol>
         </section>
         <div layout:fragment="content">
@@ -20,7 +20,7 @@
                         <a href="/parameters/list" type="button" class="btn btn-box-tool"><i class="fa fa-list-ul"></i></a>
                     </div>
                 </div>
-                <form data-toggle="validator" role="form" th:object="${param}" th:action="@{/parameters/form}" method="post">
+                <form data-toggle="validator" role="form" th:object="${param}" th:action="@{/parameters/delete}" method="post">
                     <div class="box-body">
                         <input type="hidden" th:field="*{id}"/>
 
@@ -53,23 +53,15 @@
                                    style="width:800px;"
                                    id="description" />
                         </div>
-                        <div class='input-group date' style="width:800px;" id='createTime'>
-                            <input type="hidden" class="form-control"  th:field="*{createTime}" 
-                                   ng-model="dateString"  />
-                        </div>
                     </div>
 
                     <div class="form-group">
                         <a th:href="@{/parameters/list}" class="btn btn-default" role="button" title="Back list">
                             <span aria-hidden="true"></span>Back To List
                         </a>
-                        <span th:if="${enableSave}">
-                            <button type="submit" class="box-title btn btn-primary" name="action" value="save" title="Save Data">Save</button>
-                        </span>
-                        <span th:unless="${enableSave}">
-                            <button type="submit" class="box-title btn btn-primary" name="action" value="update" title="Update Data">Update</button>
-                        </span>
-                        
+                 
+                        <button type="submit" class="btn btn-danger"  title="Delete Data">Delete</button>
+
                     </div>
                 </form>
             </div>

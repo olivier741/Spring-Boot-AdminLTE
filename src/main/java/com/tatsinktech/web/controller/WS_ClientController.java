@@ -5,8 +5,9 @@
  */
 package com.tatsinktech.web.controller;
 
+import com.tatsinktech.web.model.gateway_api.WS_Client;
 import com.tatsinktech.web.model.register.Parameter;
-import com.tatsinktech.web.repository.ParameterRepository;
+import com.tatsinktech.web.repository.WS_ClientRepository;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import org.keycloak.adapters.springsecurity.account.SimpleKeycloakAccount;
@@ -30,17 +31,17 @@ import org.springframework.web.servlet.ModelAndView;
 
 /**
  *
- * @author olivier
+ * @author olivier.tatsinkou
  */
 @Controller
-@RequestMapping("parameters")
-public class ParameterController {
+@RequestMapping("wsclients")
+public class WS_ClientController {
 
     private boolean enableSave = true;
     private boolean enableEdit = true;
 
     @Autowired
-    private ParameterRepository parameterRepo;
+    private WS_ClientRepository wsClientRepo;
 
     public boolean isEnableSave() {
         return enableSave;
@@ -57,74 +58,72 @@ public class ParameterController {
     public void setEnableEdit(boolean enableEdit) {
         this.enableEdit = enableEdit;
     }
-    
-    
 
     @GetMapping("/list")
     public ModelMap getlist(@PageableDefault(size = 10) Pageable pageable, @RequestParam(name = "value", required = false) String value, Model model, @NotNull Authentication auth) {
         loadMode(model, auth);
         if (value != null) {
             model.addAttribute("key", value);
-            return new ModelMap().addAttribute("parameters", parameterRepo.findByParamNameContainingIgnoreCase(value, pageable));
+            return new ModelMap().addAttribute("wsclients", wsClientRepo.findByClientNameContainingIgnoreCase(value, pageable));
         } else {
-            return new ModelMap().addAttribute("parameters", parameterRepo.findAll(pageable));
+            return new ModelMap().addAttribute("wsclients", wsClientRepo.findAll(pageable));
         }
     }
 
     @GetMapping("/form")
     public ModelMap getForm(@RequestParam(value = "id", required = false) Long id, Model model, @NotNull Authentication auth) {
         loadMode(model, auth);
-        Parameter entity = new Parameter();
+        WS_Client entity = new WS_Client();
         enableSave = true;
         if (id != null) {
             enableSave = false;
-            entity = parameterRepo.findParameterById(id);
+            entity = wsClientRepo.findWS_ClientById(id);
         }
 
         model.addAttribute("enableSave", enableSave);
 
-        return new ModelMap("param", entity);
+        return new ModelMap("wclient", entity);
     }
 
     @PostMapping("/form")
-    public String postForm(@Valid @ModelAttribute("param") Parameter entity,
+    public String postForm(@Valid @ModelAttribute("wclient") WS_Client entity,
             BindingResult errors, SessionStatus status, Model model, @NotNull Authentication auth) {
         loadMode(model, auth);
         if (errors.hasErrors()) {
-            return "parameters/form";
+            return "wsclients/form";
         }
 
-        parameterRepo.save(entity);
+        wsClientRepo.save(entity);
         status.setComplete();
-        return "redirect:/parameters/list";
+        return "redirect:/wsclients/list";
 
     }
 
     @GetMapping("/delete")
     public ModelMap getDelete(@RequestParam(value = "id", required = true) long id, Model model, @NotNull Authentication auth) {
         loadMode(model, auth);
-        Parameter entity = parameterRepo.findParameterById(id);
+        WS_Client entity = wsClientRepo.findWS_ClientById(id);
         enableEdit = true;
 
         model.addAttribute("enableEdit", enableEdit);
-        return new ModelMap("param", entity);
+        return new ModelMap("wclient", entity);
     }
 
     @PostMapping("/delete")
-    public Object postDelete(@Valid @ModelAttribute("param") Parameter entity, SessionStatus status, Model model, @NotNull Authentication auth) {
+    public Object postDelete(@Valid @ModelAttribute("wclient") WS_Client entity, SessionStatus status, Model model, @NotNull Authentication auth) {
         loadMode(model, auth);
         try {
-            parameterRepo.delete(entity);
+            wsClientRepo.delete(entity);
         } catch (DataIntegrityViolationException exception) {
             status.setComplete();
             return new ModelAndView("error/errorHapus")
-                    .addObject("entityId", entity.getParamName())
-                    .addObject("entityName", "parameters")
+                    .addObject("entityId", entity.getClientName())
+                    .addObject("entityName", "wsclients")
                     .addObject("errorCause", exception.getRootCause().getMessage())
-                    .addObject("backLink", "/parameters/list");
+                    .addObject("backLink", "/wsclients/list");
         }
         status.setComplete();
-        return "redirect:/parameters/list";
+        return "redirect:/wsclients/list";
     }
 
     private void loadMode(Model model, Authentication auth) {
@@ -154,5 +153,4 @@ public class ParameterController {
         model.addAttribute("keycloak_nickname", nickName);
         model.addAttribute("keycloak_phone", phone_number);
     }
-
 }

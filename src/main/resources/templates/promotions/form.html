@@ -119,6 +119,12 @@
                             <label for="Description">Description</label>
                             <input type="text" class="form-control" th:field="*{description}"  th:readonly="${enableEdit}" style="width:800px;" id="description" />
                         </div>
+                        
+                        <div class='input-group date' style="width:800px;" id='createTime'>
+                            <input type="hidden" class="form-control"  th:field="*{createTime}" 
+                                   ng-model="dateString"  />
+                        </div>
+                        
                     </div>
                     <div class="form-group">
                         <a th:href="@{/promotions/list}" class="btn btn-default" role="button" title="Back list">
