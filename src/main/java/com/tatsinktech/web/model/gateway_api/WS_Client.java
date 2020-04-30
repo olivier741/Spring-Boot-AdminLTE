@@ -37,23 +37,23 @@ public class WS_Client extends AbstractModel<Long> {
     @Column(name = "client_name", nullable = false, unique = true)
     private String clientName;
     
-    @Column(name = "login",nullable = false)
+    @Column(name = "login",nullable = true)
     private String login;
     
-    @Column(name = "login_salt",nullable = false)
+    @Column(name = "login_salt",nullable = true)
     private String loginSalt;
     
-    @Column(name = "password",nullable = false)
+    @Column(name = "password",nullable = true)
     private String password;
     
-    @Column(name = "password_salt",nullable = false)
+    @Column(name = "password_salt",nullable = true)
     private String passwordSalt;
     
     @Column(name = "ip_address",nullable = true)
     private String ipAddress;
     
-    @Column(name = "tps_remote_api",nullable = true)
-    private long tpsRemoteApi;
+    @Column(name = "tps_allow",nullable = true)
+    private long tpsAllow;
 
     @OneToMany(mappedBy = "ws_client")
     private Set<WS_AccessManagement> listAccessManagement = new HashSet<>();

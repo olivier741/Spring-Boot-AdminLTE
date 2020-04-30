@@ -8,14 +8,12 @@ package com.tatsinktech.web.controller;
 import com.tatsinktech.web.model.register.Action;
 import com.tatsinktech.web.model.register.Command;
 import com.tatsinktech.web.model.register.Parameter;
-import com.tatsinktech.web.model.register.Product;
-import com.tatsinktech.web.model.register.Promotion;
-import com.tatsinktech.web.model.register.ServiceProvider;
 import com.tatsinktech.web.repository.ActionRepository;
 import com.tatsinktech.web.repository.CommandRepository;
 import com.tatsinktech.web.repository.ParameterRepository;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
-import java.util.Optional;
 import java.util.logging.Logger;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -23,6 +21,7 @@ import org.apache.commons.lang.StringUtils;
 import org.keycloak.adapters.springsecurity.account.SimpleKeycloakAccount;
 import org.keycloak.representations.AccessToken;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -31,7 +30,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -79,6 +80,16 @@ public class CommandController {
     public void setEnableEdit(boolean enableEdit) {
         this.enableEdit = enableEdit;
     }
+    
+    
+    @InitBinder
+    public void initBinder(WebDataBinder binder) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        dateFormat.setLenient(false);
+        binder.registerCustomEditor(Date.class, new CustomDateEditor(dateFormat, true));
+
+    }
+    
 
     @GetMapping("/list")
     public ModelMap getlist(@PageableDefault(size = 10) Pageable pageable,
@@ -92,6 +103,32 @@ public class CommandController {
         } else {
             return new ModelMap().addAttribute("commands", commandRepo.findAll(pageable));
         }
+    }
+    
+     @GetMapping("/view")
+    public ModelMap getView(@RequestParam(value = "id", required = true) long id, Model model, @NotNull Authentication auth) {
+        loadMode(model, auth);
+        Command entity = commandRepo.findCommandById(id);
+        enableEdit = true;
+
+         Iterable<Action> listAction = actionRepo.findAll();
+            Iterable<Parameter> listParameter = parameterRepo.findAll();
+
+            HashAction.clear();
+            for (Action act1 : listAction) {
+                HashAction.put(act1.getActionName(), act1);
+            }
+
+            HashParameter.clear();
+            for (Parameter param1 : listParameter) {
+                HashParameter.put(param1.getParamName(), param1);
+            }
+
+            model.addAttribute("listAction", listAction);
+            model.addAttribute("listParameter", listParameter);
+
+        model.addAttribute("enableEdit", enableEdit);
+        return new ModelMap("comd", entity);
     }
 
     @GetMapping("/form")

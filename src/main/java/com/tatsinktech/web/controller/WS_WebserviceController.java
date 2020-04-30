@@ -5,17 +5,13 @@
  */
 package com.tatsinktech.web.controller;
 
-import com.tatsinktech.web.model.register.Command;
-import com.tatsinktech.web.model.register.Notification_Conf;
-import com.tatsinktech.web.repository.CommandRepository;
-import com.tatsinktech.web.repository.Notification_ConfRepository;
+import com.tatsinktech.web.model.gateway_api.WS_Client;
+import com.tatsinktech.web.model.gateway_api.WS_Webservice;
+import com.tatsinktech.web.repository.WS_WebserviceRepository;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.logging.Logger;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import org.apache.commons.lang.StringUtils;
 import org.keycloak.adapters.springsecurity.account.SimpleKeycloakAccount;
 import org.keycloak.representations.AccessToken;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,21 +39,14 @@ import org.springframework.web.servlet.ModelAndView;
  * @author olivier.tatsinkou
  */
 @Controller
-@RequestMapping("notifications")
-public class Notification_ConfController {
-
-    private Logger logger = Logger.getLogger(this.getClass().getName());
-
-    private HashMap<String, Command> HashCommand = new HashMap<String, Command>();
+@RequestMapping("wswebservices")
+public class WS_WebserviceController {
 
     private boolean enableSave = true;
     private boolean enableEdit = true;
 
     @Autowired
-    private Notification_ConfRepository notifyRepo;
-
-    @Autowired
-    private CommandRepository commandRepo;
+    private WS_WebserviceRepository wsWebserviceRepo;
 
     public boolean isEnableSave() {
         return enableSave;
@@ -75,7 +64,6 @@ public class Notification_ConfController {
         this.enableEdit = enableEdit;
     }
 
-    
     @InitBinder
     public void initBinder(WebDataBinder binder) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
@@ -83,138 +71,82 @@ public class Notification_ConfController {
         binder.registerCustomEditor(Date.class, new CustomDateEditor(dateFormat, true));
 
     }
-    
-    @GetMapping("/list")
-    public ModelMap getlist(@PageableDefault(size = 10) Pageable pageable,
-            @RequestParam(name = "value", required = false) String value,
-            Model model, @NotNull Authentication auth) {
 
+    @GetMapping("/list")
+    public ModelMap getlist(@PageableDefault(size = 10) Pageable pageable, @RequestParam(name = "value", required = false) String value, Model model, @NotNull Authentication auth) {
         loadMode(model, auth);
         if (value != null) {
             model.addAttribute("key", value);
-            return new ModelMap().addAttribute("notifications", notifyRepo.findByNoficationNameContainingIgnoreCase(value, pageable));
+            return new ModelMap().addAttribute("wswebservices", wsWebserviceRepo.findByWebserviceNameContainingIgnoreCase(value, pageable));
         } else {
-            return new ModelMap().addAttribute("notifications", notifyRepo.findAll(pageable));
+            return new ModelMap().addAttribute("wswebservices", wsWebserviceRepo.findAll(pageable));
         }
     }
-    
-     @GetMapping("/view")
+
+    @GetMapping("/view")
     public ModelMap getView(@RequestParam(value = "id", required = true) long id, Model model, @NotNull Authentication auth) {
         loadMode(model, auth);
-        Notification_Conf entity = notifyRepo.findNotification_ConfById(id);
+        WS_Webservice entity = wsWebserviceRepo.findWS_WebserviceById(id);
         enableEdit = true;
 
-        Iterable<Command> listCommand = commandRepo.findAll();
-
-        HashCommand.clear();
-        for (Command comd : listCommand) {
-            HashCommand.put(comd.getCommandName(), comd);
-        }
-
-        model.addAttribute("listCommand", listCommand);
-
         model.addAttribute("enableEdit", enableEdit);
-        return new ModelMap("notif", entity);
+        return new ModelMap("wsrv", entity);
     }
-
 
     @GetMapping("/form")
     public ModelMap getForm(@RequestParam(value = "id", required = false) Long id, Model model, @NotNull Authentication auth) {
         loadMode(model, auth);
-        Notification_Conf entity = new Notification_Conf();
+        WS_Webservice entity = new WS_Webservice();
         enableSave = true;
         if (id != null) {
             enableSave = false;
-            entity = notifyRepo.findNotification_ConfById(id);
+            entity = wsWebserviceRepo.findWS_WebserviceById(id);
         }
 
-        Iterable<Command> listCommand = commandRepo.findAll();
-
-        HashCommand.clear();
-        for (Command comd : listCommand) {
-            HashCommand.put(comd.getCommandName(), comd);
-        }
-
-        model.addAttribute("listCommand", listCommand);
         model.addAttribute("enableSave", enableSave);
 
-        return new ModelMap("notif", entity);
+        return new ModelMap("wsrv", entity);
     }
 
     @PostMapping("/form")
-    public String postForm(@Valid @ModelAttribute("notif") Notification_Conf entity,
+    public String postForm(@Valid @ModelAttribute("wsrv") WS_Webservice entity,
             BindingResult errors, SessionStatus status, Model model, @NotNull Authentication auth) {
         loadMode(model, auth);
-
-        boolean is_error = false;
-        String result = "notifications/form";
-
         if (errors.hasErrors()) {
-            is_error = true;
+            return "wswebservices/form";
         }
 
-        String command_name = entity.getCommand().getCommandName();
-
-        Command comd = null;
-
-        if (!StringUtils.isBlank(command_name) && !command_name.equals("NONE")) {
-            comd = HashCommand.get(command_name);
-        }
-
-        entity.setCommand(comd);
-
-        notifyRepo.save(entity);
+        wsWebserviceRepo.save(entity);
         status.setComplete();
-        result = "redirect:/notifications/list";
+        return "redirect:/wswebservices/list";
 
-        if (is_error) {
-            Iterable<Command> listCommand = commandRepo.findAll();
-
-            HashCommand.clear();
-            for (Command comd1 : listCommand) {
-                HashCommand.put(comd1.getCommandName(), comd1);
-            }
-
-            model.addAttribute("listCommand", listCommand);
-        }
-
-        return result;
     }
 
     @GetMapping("/delete")
     public ModelMap getDelete(@RequestParam(value = "id", required = true) long id, Model model, @NotNull Authentication auth) {
         loadMode(model, auth);
-        Notification_Conf entity = notifyRepo.findNotification_ConfById(id);
+        WS_Webservice entity = wsWebserviceRepo.findWS_WebserviceById(id);
         enableEdit = true;
 
-        Iterable<Command> listCommand = commandRepo.findAll();
-
-        HashCommand.clear();
-        for (Command comd : listCommand) {
-            HashCommand.put(comd.getCommandName(), comd);
-        }
-
-        model.addAttribute("listCommand", listCommand);
-
         model.addAttribute("enableEdit", enableEdit);
-        return new ModelMap("notif", entity);
+        return new ModelMap("wsrv", entity);
     }
 
     @PostMapping("/delete")
-    public Object postDelete(@Valid @ModelAttribute("notif") Notification_Conf entity, SessionStatus status, Model model, @NotNull Authentication auth) {
+    public Object postDelete(@Valid @ModelAttribute("wsrv") WS_Webservice entity, SessionStatus status, Model model, @NotNull Authentication auth) {
         loadMode(model, auth);
         try {
-            notifyRepo.delete(entity);
+            wsWebserviceRepo.delete(entity);
         } catch (DataIntegrityViolationException exception) {
             status.setComplete();
             return new ModelAndView("error/errorHapus")
-                    .addObject("entityId", entity.getNoficationName())
-                    .addObject("entityName", "notifications")
+                    .addObject("entityId", entity.getWebserviceName())
+                    .addObject("entityName", "wswebservices")
                     .addObject("errorCause", exception.getRootCause().getMessage())
-                    .addObject("backLink", "/notifications/list");
+                    .addObject("backLink", "/wswebservices/list");
         }
         status.setComplete();
-        return "redirect:/notifications/list";
+        return "redirect:/wswebservices/list";
     }
 
     private void loadMode(Model model, Authentication auth) {

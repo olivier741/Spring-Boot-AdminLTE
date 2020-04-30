@@ -108,6 +108,32 @@ public class ProductController {
         }
     }
 
+     @GetMapping("/view")
+    public ModelMap getView(@RequestParam(value = "id", required = true) long id, Model model, @NotNull Authentication auth) {
+        loadMode(model, auth);
+        Product entity = productRepo.findProductById(id);
+        enableEdit = true;
+
+        Iterable<Promotion> listPromotion = promoRepo.findAll();
+        Iterable<ServiceProvider> listService = serviceRepo.findAll();
+
+        HashPomotion.clear();
+        for (Promotion promo : listPromotion) {
+            HashPomotion.put(promo.getPromotionName(), promo);
+        }
+
+        HashService.clear();
+        for (ServiceProvider serv : listService) {
+            HashService.put(serv.getServiceName(), serv);
+        }
+
+        model.addAttribute("listPromotion", listPromotion);
+        model.addAttribute("listService", listService);
+
+        model.addAttribute("enableEdit", enableEdit);
+        return new ModelMap("product", entity);
+    }
+    
     @GetMapping("/form")
     public ModelMap getForm(@RequestParam(value = "id", required = false) Long id, Model model, @NotNull Authentication auth) {
         loadMode(model, auth);

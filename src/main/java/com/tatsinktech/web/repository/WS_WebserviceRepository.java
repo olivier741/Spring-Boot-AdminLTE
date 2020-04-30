@@ -35,7 +35,6 @@ public interface WS_WebserviceRepository extends PagingAndSortingRepository<WS_W
     Page<WS_Webservice>findByApiSoapWsdlContainingIgnoreCase(String apiSoapWsdl, Pageable pageable);
     Page<WS_Webservice>findByApiSoapXsdContainingIgnoreCase(String apiSoapXsd, Pageable pageable);
     Page<WS_Webservice>findByApiSoapRequestContainingIgnoreCase(String apiSoapRequest, Pageable pageable);
-    Page<WS_Webservice>findByApiFunctionContainingIgnoreCase(String apiFunction, Pageable pageable);
     Page<WS_Webservice>findByRemoteOperatorContainingIgnoreCase(String remoteOperator, Pageable pageable);
     Page<WS_Webservice>findByRemoteConTimeoutContainingIgnoreCase(long remoteConTimeout, Pageable pageable);
     Page<WS_Webservice>findByRemoteReqTimeoutContainingIgnoreCase(long remoteReqTimeout, Pageable pageable);

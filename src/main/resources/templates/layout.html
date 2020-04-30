@@ -8,7 +8,7 @@
         <title layout:title-pattern="$LAYOUT_TITLE - $CONTENT_TITLE">CMS VAS SERVICES</title>
         <link href="/dist/css/select2-bootstrap.min.css" rel="stylesheet" type="text/css"/>
         <link href="/dist/css/select2.min.css" rel="stylesheet" type="text/css"/>
-        
+
         <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.43/css/bootstrap-datetimepicker.min.css"/> 
         <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.43/css/bootstrap-datetimepicker-standalone.css"/> 
 
@@ -125,6 +125,19 @@
                             allowInputToggle: true,
                         }
                 );
+
+                $('#expireTimeToken').datetimepicker(
+                        {
+                            format: 'YYYY-MM-DD HH:mm',
+                            extraFormats: ['DD-MM-YYYY HH:mm'],
+                            useCurrent: false,
+                            sideBySide: false,
+                            showTodayButton: true,
+                            showClear: true,
+                            keepInvalid: true,
+                            allowInputToggle: true,
+                        }
+                );
             });
         </script>
 
@@ -149,6 +162,6 @@
         <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.43/js/bootstrap-datetimepicker.min.js"></script>
         <script src="/dist/js/select2.full.min.js" type="text/javascript"></script>
         <script src="/dist/js/jquery.slimscroll.min.js" type="text/javascript"></script>
-        
+
     </body>
 </html>

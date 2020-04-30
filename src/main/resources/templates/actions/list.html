@@ -61,6 +61,8 @@
                                     <td th:text="${#dates.format(row.createTime, 'yyyy-MM-dd HH:mm:ss')}"></td>
                                     <td th:text="${#dates.format(row.updateTime, 'yyyy-MM-dd HH:mm:ss')}"></td>
                                     <td>
+                                        <a href="#" class="btn btn-default" th:href="@{/actions/view(id=${row.id})}"
+                                           title="View Data"><span class="glyphicon glyphicon-eye-open"></span></a>
                                         <a href="#" class="btn btn-default" th:href="@{/actions/form(id=${row.id})}"
                                            title="Edit Data"><span class="glyphicon glyphicon-edit"></span></a>
                                         <a href="#" class="btn btn-default" th:href="@{/actions/delete(id=${row.id})}"

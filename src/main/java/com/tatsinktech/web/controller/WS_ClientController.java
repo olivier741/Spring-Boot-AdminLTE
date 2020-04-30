@@ -8,11 +8,14 @@ package com.tatsinktech.web.controller;
 import com.tatsinktech.web.model.gateway_api.WS_Client;
 import com.tatsinktech.web.model.register.Parameter;
 import com.tatsinktech.web.repository.WS_ClientRepository;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import org.keycloak.adapters.springsecurity.account.SimpleKeycloakAccount;
 import org.keycloak.representations.AccessToken;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -21,7 +24,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -59,6 +64,14 @@ public class WS_ClientController {
         this.enableEdit = enableEdit;
     }
 
+    @InitBinder
+    public void initBinder(WebDataBinder binder) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        dateFormat.setLenient(false);
+        binder.registerCustomEditor(Date.class, new CustomDateEditor(dateFormat, true));
+
+    }
+
     @GetMapping("/list")
     public ModelMap getlist(@PageableDefault(size = 10) Pageable pageable, @RequestParam(name = "value", required = false) String value, Model model, @NotNull Authentication auth) {
         loadMode(model, auth);
@@ -68,6 +81,16 @@ public class WS_ClientController {
         } else {
             return new ModelMap().addAttribute("wsclients", wsClientRepo.findAll(pageable));
         }
+    }
+
+    @GetMapping("/view")
+    public ModelMap getView(@RequestParam(value = "id", required = true) long id, Model model, @NotNull Authentication auth) {
+        loadMode(model, auth);
+        WS_Client entity = wsClientRepo.findWS_ClientById(id);
+        enableEdit = true;
+
+        model.addAttribute("enableEdit", enableEdit);
+        return new ModelMap("wcl", entity);
     }
 
     @GetMapping("/form")
@@ -82,11 +105,11 @@ public class WS_ClientController {
 
         model.addAttribute("enableSave", enableSave);
 
-        return new ModelMap("wclient", entity);
+        return new ModelMap("wcl", entity);
     }
 
     @PostMapping("/form")
-    public String postForm(@Valid @ModelAttribute("wclient") WS_Client entity,
+    public String postForm(@Valid @ModelAttribute("wcl") WS_Client entity,
             BindingResult errors, SessionStatus status, Model model, @NotNull Authentication auth) {
         loadMode(model, auth);
         if (errors.hasErrors()) {
@@ -106,11 +129,11 @@ public class WS_ClientController {
         enableEdit = true;
 
         model.addAttribute("enableEdit", enableEdit);
-        return new ModelMap("wclient", entity);
+        return new ModelMap("wcl", entity);
     }
 
     @PostMapping("/delete")
-    public Object postDelete(@Valid @ModelAttribute("wclient") WS_Client entity, SessionStatus status, Model model, @NotNull Authentication auth) {
+    public Object postDelete(@Valid @ModelAttribute("wcl") WS_Client entity, SessionStatus status, Model model, @NotNull Authentication auth) {
         loadMode(model, auth);
         try {
             wsClientRepo.delete(entity);

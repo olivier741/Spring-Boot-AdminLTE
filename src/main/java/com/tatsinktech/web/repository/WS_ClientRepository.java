@@ -27,8 +27,8 @@ public interface WS_ClientRepository extends PagingAndSortingRepository<WS_Clien
     Page<WS_Client>findByLoginSaltContainingIgnoreCase(String loginSalt, Pageable pageable);
     Page<WS_Client>findByPasswordContainingIgnoreCase(String password, Pageable pageable);
     Page<WS_Client>findByPasswordSaltContainingIgnoreCase(String passwordSalt, Pageable pageable);
-    Page<WS_Client>findByIp_addressContainingIgnoreCase(String ip_address, Pageable pageable);
-    Page<WS_Client>findByTpsRemoteApiContainingIgnoreCase(long tpsRemoteApi, Pageable pageable);
+    Page<WS_Client>findByIpAddressContainingIgnoreCase(String ip_address, Pageable pageable);
+    Page<WS_Client>findByTpsAllowContainingIgnoreCase(long tpsAllow, Pageable pageable);
     
     Page<WS_Client>findByDescriptionContainingIgnoreCase(String description, Pageable pageable);
     Page<WS_Client>findByCreateTimeContainingIgnoreCase(Date create_time, Pageable pageable);

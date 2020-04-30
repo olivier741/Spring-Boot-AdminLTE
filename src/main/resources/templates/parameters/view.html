@@ -1,0 +1,68 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="layout">
+    <head>
+        <title>VIEW PARAMETER</title>
+    </head>
+    <body>
+        <section layout:fragment="header">
+            <h1>PARAMETERS</h1>
+            <ol class="breadcrumb">
+                <li><a href="/"><i class="fa fa-dashboard"></i> Home</a></li>
+                <li class="active">VIEW PARAMETER</li>
+            </ol>
+        </section>
+        <div layout:fragment="content">
+            <div class="box">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Form</h3>
+                    <div class="box-tools pull-right">
+                        <a href="/parameters/list" type="button" class="btn btn-box-tool"><i class="fa fa-list-ul"></i></a>
+                    </div>
+                </div>
+                <form data-toggle="validator" role="form" th:object="${param}" th:action="@{/parameters/delete}" method="post">
+                    <div class="box-body">
+                        <input type="hidden" th:field="*{id}"/>
+
+                        <div class="form-group">
+                            <label for="paramName">Parameter Name</label>
+                            <input type="text" required="true" class="form-control" th:field="*{paramName}"
+                                   th:readonly="${enableEdit}"
+                                   style="width:800px;"  
+                                   id="paramName" />
+                        </div>
+                        <div class="form-group">
+                            <label for="paramLength">Parameter Length</label>
+                            <input type="number" required="true" class="form-control" th:field="*{paramLength}"
+                                   th:readonly="${enableEdit}"
+                                   style="width:800px;"
+                                   id="paramLength" />
+                        </div>
+                        <div class="form-group">
+                            <label for="paramPattern">Param Pattern</label>
+                            <input type="text" required="true" class="form-control" th:field="*{paramPattern}"
+                                   th:readonly="${enableEdit}"
+                                   style="width:800px;"
+                                   id="paramPattern" />
+                        </div>
+
+                        <div class="form-group">
+                            <label for="Description">Description</label>
+                            <input type="text"  class="form-control" th:field="*{description}" 
+                                   th:readonly="${enableEdit}"
+                                   style="width:800px;"
+                                   id="description" />
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <a th:href="@{/parameters/list}" class="btn btn-default" role="button" title="Back list">
+                            <span aria-hidden="true"></span>Back To List
+                        </a>
+
+                    </div>
+                </form>
+            </div>
+        </div>
+    </body>
+</html>

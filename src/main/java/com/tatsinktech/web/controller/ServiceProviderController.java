@@ -62,19 +62,18 @@ public class ServiceProviderController {
     public void setEnableEdit(boolean enableEdit) {
         this.enableEdit = enableEdit;
     }
-    
-    
 
-//    @InitBinder
-//    public void initBinder(WebDataBinder binder) {
-//        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-//        dateFormat.setLenient(false);
-//        binder.registerCustomEditor(Date.class, new CustomDateEditor(dateFormat, true));
-//
-//    }
+    @InitBinder
+    public void initBinder(WebDataBinder binder) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        dateFormat.setLenient(false);
+        binder.registerCustomEditor(Date.class, new CustomDateEditor(dateFormat, true));
+
+    }
+
     @GetMapping("/list")
     public ModelMap getlist(@PageableDefault(size = 10) Pageable pageable, @RequestParam(name = "value", required = false) String value, Model model, @NotNull Authentication auth) {
-       loadMode(model, auth);
+        loadMode(model, auth);
         if (value != null) {
             model.addAttribute("key", value);
             return new ModelMap().addAttribute("services", serviceRepo.findByServiceNameContainingIgnoreCase(value, pageable));
@@ -83,9 +82,20 @@ public class ServiceProviderController {
         }
     }
 
+    @GetMapping("/view")
+    public ModelMap getView(@RequestParam(value = "id", required = true) long id, Model model, @NotNull Authentication auth) {
+
+        loadMode(model, auth);
+        ServiceProvider entity = serviceRepo.findServiceProviderById(id);
+
+        enableEdit = true;
+        model.addAttribute("enableEdit", enableEdit);
+        return new ModelMap("srv", entity);
+    }
+
     @GetMapping("/form")
     public ModelMap getForm(@RequestParam(value = "id", required = false) Long id, Model model, @NotNull Authentication auth) {
-       loadMode(model, auth);
+        loadMode(model, auth);
         ServiceProvider entity = new ServiceProvider();
         enableSave = true;
         if (id != null) {
@@ -118,7 +128,7 @@ public class ServiceProviderController {
 
         loadMode(model, auth);
         ServiceProvider entity = serviceRepo.findServiceProviderById(id);
-        
+
         enableEdit = true;
         model.addAttribute("enableEdit", enableEdit);
         return new ModelMap("srv", entity);

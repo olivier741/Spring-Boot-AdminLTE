@@ -9,6 +9,8 @@ import com.tatsinktech.web.model.register.Action;
 import com.tatsinktech.web.model.register.Product;
 import com.tatsinktech.web.repository.ActionRepository;
 import com.tatsinktech.web.repository.ProductRepository;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.logging.Logger;
 import javax.validation.Valid;
@@ -17,6 +19,7 @@ import org.apache.commons.lang.StringUtils;
 import org.keycloak.adapters.springsecurity.account.SimpleKeycloakAccount;
 import org.keycloak.representations.AccessToken;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -25,7 +28,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -69,6 +74,15 @@ public class ActionController {
     public void setEnableEdit(boolean enableEdit) {
         this.enableEdit = enableEdit;
     }
+    
+    
+    @InitBinder
+    public void initBinder(WebDataBinder binder) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        dateFormat.setLenient(false);
+        binder.registerCustomEditor(Date.class, new CustomDateEditor(dateFormat, true));
+
+    }
 
     @GetMapping("/list")
     public ModelMap getlist(@PageableDefault(size = 10) Pageable pageable,
@@ -83,6 +97,27 @@ public class ActionController {
             return new ModelMap().addAttribute("actions", actionRepo.findAll(pageable));
         }
     }
+    
+       @GetMapping("/view")
+    public ModelMap getView(@RequestParam(value = "id", required = true) long id, Model model, @NotNull Authentication auth) {
+        loadMode(model, auth);
+        Action entity = actionRepo.findActionById(id);
+        enableEdit = true;
+
+        Iterable<Product> listProduct = productRepo.findAll();
+
+        HashProduct.clear();
+
+        for (Product prod : listProduct) {
+            HashProduct.put(prod.getProductCode(), prod);
+        }
+
+        model.addAttribute("listProduct", listProduct);
+
+        model.addAttribute("enableEdit", enableEdit);
+        return new ModelMap("act", entity);
+    }
+
 
     @GetMapping("/form")
     public ModelMap getForm(@RequestParam(value = "id", required = false) Long id, Model model, @NotNull Authentication auth) {

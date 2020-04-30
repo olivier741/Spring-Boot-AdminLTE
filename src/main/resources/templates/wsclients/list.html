@@ -16,7 +16,7 @@
             <div class="box">
 
                 <div class="box-header with-border">
-                    <a class="box-title btn btn-primary" th:href="@{/parameters/form}">ADD WS_CLIENT</a>
+                    <a class="box-title btn btn-primary" th:href="@{/wsclients/form}">ADD WS_CLIENT</a>
 
 
                     <div class="box-tools">
@@ -45,7 +45,10 @@
                                     <th><a class="fa fa-fw fa-sort"/><a class="sorted" sd:pagination-sort="id"/>ID</th>
                                     <th><a class="fa fa-fw fa-sort"/><a class="sorted" sd:pagination-sort="clientName"/>WSclient Name</th>
                                     <th><a class="fa fa-fw fa-sort"/><a class="sorted" sd:pagination-sort="login"/>Login</th>
-                                    <th><a class="fa fa-fw fa-sort"/><a class="sorted" sd:pagination-sort="paramPattern"/>Parameter Pattern</th>
+                                    <th><a class="fa fa-fw fa-sort"/><a class="sorted" sd:pagination-sort="password"/>Password</th>
+                                     <th><a class="fa fa-fw fa-sort"/><a class="sorted" sd:pagination-sort="ipAddress"/>IP Address</th>
+                                     <th><a class="fa fa-fw fa-sort"/><a class="sorted" sd:pagination-sort="tpsAllow"/>TPS</th>
+                                    
                                     <th><a class="fa fa-fw fa-sort"/><a class="sorted" sd:pagination-sort="description"/>Description</th>
                                     <th><a class="fa fa-fw fa-sort"/><a class="sorted" sd:pagination-sort="createTime"/>Create Date</th>
                                     <th><a class="fa fa-fw fa-sort"/><a class="sorted" sd:pagination-sort="updateTime"/>Update Date</th>
@@ -55,12 +58,17 @@
                                 <tr th:each="row : ${wsclients}">
                                     <td th:text="${row.id}"></td>
                                     <td th:text="${row.clientName}"></td>
-                                    <td th:text="${row.paramLength}"></td>
-                                    <td th:text="${row.paramPattern}"></td>
+                                    <td th:text="${row.login}"></td>
+                                    <td th:text="${row.password}"></td>
+                                    <td th:text="${row.ipAddress}"></td>
+                                    <td th:text="${row.tpsAllow}"></td>
+                                    
                                     <td th:text="${row.description}"></td>
                                     <td th:text="${#dates.format(row.createTime, 'yyyy-MM-dd HH:mm:ss')}"></td>
                                     <td th:text="${#dates.format(row.updateTime, 'yyyy-MM-dd HH:mm:ss')}"></td>
                                     <td>
+                                         <a href="#" class="btn btn-default" th:href="@{/wsclients/view(id=${row.id})}"
+                                           title="View Data"><span class="glyphicon glyphicon-eye-open"></span></a>
                                         <a href="#" class="btn btn-default" th:href="@{/wsclients/form(id=${row.id})}"
                                            title="Edit Data"><span class="glyphicon glyphicon-edit"></span></a>
                                         <a href="#" class="btn btn-default" th:href="@{/wsclients/delete(id=${row.id})}"

@@ -5,7 +5,6 @@
  */
 package com.tatsinktech.web.controller;
 
-
 import com.tatsinktech.web.model.register.Promotion;
 import com.tatsinktech.web.repository.PromotionRepository;
 import java.text.SimpleDateFormat;
@@ -47,9 +46,7 @@ public class PromotionController {
 
     @Autowired
     private PromotionRepository promoRepo;
-    
-    
-   
+
     public boolean isEnableSave() {
         return enableSave;
     }
@@ -65,22 +62,20 @@ public class PromotionController {
     public void setEnableEdit(boolean enableEdit) {
         this.enableEdit = enableEdit;
     }
-    
+
     @InitBinder
     public void initBinder(WebDataBinder binder) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
         dateFormat.setLenient(false);
         binder.registerCustomEditor(Date.class, new CustomDateEditor(dateFormat, true));
 
-    } 
-
-     
+    }
 
     @GetMapping("/list")
     public ModelMap getlist(@PageableDefault(size = 10) Pageable pageable,
             @RequestParam(name = "value", required = false) String value,
             Model model, @NotNull Authentication auth) {
-        
+
         loadMode(model, auth);
         if (value != null) {
             model.addAttribute("key", value);
@@ -88,6 +83,16 @@ public class PromotionController {
         } else {
             return new ModelMap().addAttribute("promotions", promoRepo.findAll(pageable));
         }
+    }
+
+    @GetMapping("/view")
+    public ModelMap getView(@RequestParam(value = "id", required = true) long id, Model model, @NotNull Authentication auth) {
+        loadMode(model, auth);
+        Promotion entity = promoRepo.findPromotionById(id);
+        enableEdit = true;
+
+        model.addAttribute("enableEdit", enableEdit);
+        return new ModelMap("promo", entity);
     }
 
     @GetMapping("/form")
@@ -109,7 +114,7 @@ public class PromotionController {
     public String postForm(@Valid @ModelAttribute("promo") Promotion entity,
             BindingResult errors, SessionStatus status, Model model, @NotNull Authentication auth) {
         loadMode(model, auth);
-        
+
         if (errors.hasErrors()) {
             return "promotions/form";
         }

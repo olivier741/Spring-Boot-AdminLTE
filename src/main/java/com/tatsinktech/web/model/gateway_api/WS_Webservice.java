@@ -83,10 +83,6 @@ public class WS_Webservice extends AbstractModel<Long> {
     @Column(name = "api_soap_request",nullable = true)
     @Lob
     private String apiSoapRequest;  
-    
-    @Column(name = "api_function",nullable = false)
-    @Enumerated(EnumType.STRING)
-    private API_Function apiFunction;
 
     @Column(name = "remote_operator",nullable = true)
     private String remoteOperator; 
