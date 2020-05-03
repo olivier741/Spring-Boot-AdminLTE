@@ -14,7 +14,9 @@ import java.sql.Timestamp;
 import javax.persistence.Column;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.Index;
 import javax.persistence.Lob;
+import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
@@ -36,10 +38,17 @@ import org.hibernate.annotations.UpdateTimestamp;
 @NoArgsConstructor
 @ToString
 @Check(constraints = "charge_fee >= 0")
+@Table(name = "charge_hist",
+        indexes = {
+                @Index(columnList = "msisdn", name = "msisdn_chargehist_idx"),
+                @Index(columnList = "transaction_id", name = "transaction_chargehist_idx")
+        })
 public class Charge_Hist extends AbstractModel<Long> {
 
     @Column(name = "transaction_id")
     private String transactionId;
+    
+    @Column(name = "msisdn")
     private String msisdn;
 
     @Enumerated(EnumType.STRING)

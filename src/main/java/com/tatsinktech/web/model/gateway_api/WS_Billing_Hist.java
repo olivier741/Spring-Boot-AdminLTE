@@ -15,6 +15,7 @@ import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.Index;
 import javax.persistence.Lob;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -35,7 +36,11 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-@Table(name = "ws_billing_Hist")
+@Table(name = "ws_billing_Hist",
+        indexes = {
+                @Index(columnList = "msisdn", name = "msisdn_wsbilling_idx"),
+                @Index(columnList = "transaction_id", name = "transaction_wsbilling_idx")
+        })
 public class WS_Billing_Hist extends AbstractModel<Long>{
 
     @Column(name = "transaction_id",nullable = false)

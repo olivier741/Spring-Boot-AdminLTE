@@ -11,9 +11,11 @@ import java.sql.Timestamp;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.FetchType;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
@@ -33,6 +35,11 @@ import org.hibernate.annotations.UpdateTimestamp;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
+@Table(name = "mt_hist",
+        indexes = {
+                @Index(columnList = "msisdn", name = "msisdn_mthist_idx"),
+                @Index(columnList = "transaction_id", name = "transaction_mthist_idx")
+        })
 public class Mt_Hist extends AbstractModel<Long>{
 
    @Column(name = "transaction_id")

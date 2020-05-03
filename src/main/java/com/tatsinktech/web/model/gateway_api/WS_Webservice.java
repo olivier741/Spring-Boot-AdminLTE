@@ -120,7 +120,7 @@ public class WS_Webservice extends AbstractModel<Long> {
     @Column(name = "expire_time_token",nullable = true)
     private Date expireTimeToken; 
 
-   @OneToMany(mappedBy = "ws_webservice")
+   @OneToMany(mappedBy = "wsWebservice")
    private Set<WS_AccessManagement> listWS_AccessManagement = new HashSet<>();
 
 

@@ -8,8 +8,10 @@ package com.tatsinktech.web.model.register;
 import com.tatsinktech.web.model.AbstractModel;
 import javax.persistence.Entity;
 import java.sql.Timestamp;
+import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.FetchType;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -33,7 +35,12 @@ import org.hibernate.annotations.UpdateTimestamp;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-@Table(uniqueConstraints = {
+@Table(name = "register" ,
+        indexes = {
+                @Index(columnList = "msisdn", name = "msisdn_register_idx"),
+                @Index(columnList = "transaction_id", name = "transaction_register_idx")
+        },
+        uniqueConstraints = {
     @UniqueConstraint(columnNames = {"transaction_id", "msisdn", "product_id"})})
 public class Register extends AbstractModel<Long> {
 
@@ -56,23 +63,23 @@ public class Register extends AbstractModel<Long> {
     private boolean autoextend;
 
     @Column(name = "reg_time")
-    private Timestamp regTime;
+    private Date regTime;
 
     @UpdateTimestamp
     @Column(name = "renew_time")
-    private Timestamp renewTime;
+    private Date renewTime;
 
     @Column(name = "expire_time")
-    private Timestamp expireTime;
+    private Date expireTime;
 
     @Column(name = "unreg_time")
-    private Timestamp unregTime;
+    private Date unregTime;
 
     @Column(name = "cancel_time")
-    private Timestamp cancelTime;
+    private Date cancelTime;
 
     @Column(name = "number_reg")
-    private int numberReg;
+    private long numberReg;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "product_id", nullable = true)

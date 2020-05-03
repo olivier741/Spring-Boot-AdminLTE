@@ -1,0 +1,123 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="layout">
+    <head>
+        <title>ADD WS_ACCESSMANAGEMENT</title>
+    </head>
+    <body>
+        <section layout:fragment="header">
+            <h1>WS_ACCESSMANAGEMENTS</h1>
+            <ol class="breadcrumb">
+                <li><a href="/"><i class="fa fa-dashboard"></i> Home</a></li>
+                <li class="active">ADD WS_ACCESSMANAGEMENT</li>
+            </ol>
+        </section>
+        <div layout:fragment="content">
+            <div class="box">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Form</h3>
+                    <div class="box-tools pull-right">
+                        <a href="/wsaccesmanagemets/list" type="button" class="btn btn-box-tool"><i class="fa fa-list-ul"></i></a>
+                    </div>
+                </div>
+                <form data-toggle="validator" role="form" th:object="${wsaccess}" th:action="@{/wsaccesmanagemets/form}" method="post">
+                    <div class="box-body">
+                        <input type="hidden" th:field="*{id}"/>
+
+                        <div class="form-group">
+                            <label for="accessName">AccessManagement Name</label>
+                            <input type="text" required="true" class="form-control" 
+                                   th:field="*{accessName}" 
+                                   th:readonly="${enableEdit}"
+                                   style="width:800px;" 
+                                   id="accessName" />
+                        </div> 
+
+                        <div class="form-group">
+                            <label for="maxConnexionAllocate">Max Connexion Allow</label>
+                            <input type="number" required="true" class="form-control" 
+                                   th:field="*{maxConnexionAllocate}" 
+                                   th:readonly="${enableEdit}"
+                                   style="width:800px;" 
+                                   id="maxConnexionAllocate" />
+                        </div> 
+                        
+                        <div class="form-group">
+                            <label for="maxRequestAllocate">Max Request Allow</label>
+                            <input type="number" required="true" class="form-control" 
+                                   th:field="*{maxRequestAllocate}" 
+                                   th:readonly="${enableEdit}"
+                                   style="width:800px;" 
+                                   id="maxRequestAllocate" />
+                        </div> 
+                        
+                          <div class="form-group">
+                            <label for="StartTime">Start Time</label>
+                            <div class='input-group date' style="width:800px;" id='startTime'>
+                                <input type='text' class="form-control" required="true" th:field="*{startTime}"   th:readonly="${enableEdit}"
+                                       ng-model="dateString" />
+                                <span class="input-group-addon">
+                                    <span class="glyphicon glyphicon-calendar"></span>
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="EndTime">End Time</label>
+                            <div class='input-group date' style="width:800px;" id='endTime'>
+                                <input type='text' class="form-control" required="true" th:field="*{endTime}"  th:readonly="${enableEdit}"
+                                       ng-model="dateString"  />
+                                <span class="input-group-addon">
+                                    <span class="glyphicon glyphicon-calendar"></span>
+                                </span>
+                            </div>
+                        </div>
+
+
+                        <div class="form-group">
+                            <label for="WSClient">WS Client</label>
+                            <select  class="form-control"  th:field="*{wsClient.clientName}" th:readonly="${enableEdit}" style="width:800px;"  id="promotion_filter" >
+                                <option th:value="'NONE'" th:text="NONE"></option>
+                                <option th:each="wclt : ${listWS_Client}"
+                                        th:value="${wclt.clientName}"
+                                        th:utext="${wclt.clientName}" />
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="Parameter">WS Webservice</label>
+                            <select  class="form-control"  th:field="*{wsWebservice.webserviceName}" th:readonly="${enableEdit}" style="width:800px;"  id="promotion_filter" >
+                                <option th:value="'NONE'" th:text="NONE"></option>
+                                <option th:each="wbsrv : ${listWS_Webservice}"
+                                        th:value="${wbsrv.webserviceName}"
+                                        th:utext="${wbsrv.webserviceName}" />
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="Description">Description</label>
+                            <input type="text" class="form-control" th:field="*{description}"  th:readonly="${enableEdit}" style="width:800px;" id="description" />
+                        </div>
+
+                        <div class='input-group date' style="width:800px;" id='createTime'>
+                            <input type="hidden" class="form-control"  th:field="*{createTime}" 
+                                   ng-model="dateString"  />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <a th:href="@{/wsaccesmanagemets/list}" class="btn btn-default" role="button" title="Back list">
+                            <span aria-hidden="true"></span>Back To List
+                        </a>
+                        <span th:if="${enableSave}">
+                            <button type="submit" class="box-title btn btn-primary" name="action" value="save" title="Save Data">Save</button>
+                        </span>
+                        <span th:unless="${enableSave}">
+                            <button type="submit" class="box-title btn btn-primary" name="action" value="update" title="Update Data">Update</button>
+                        </span>
+
+                    </div>
+                </form>
+            </div>
+        </div>
+    </body>
+</html>

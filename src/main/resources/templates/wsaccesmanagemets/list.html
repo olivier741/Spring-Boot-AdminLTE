@@ -2,30 +2,29 @@
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="layout">
     <head>
-        <title>WS_Webservice</title>
+        <title>WS_AccessManagemet</title>
     </head>
     <body>
         <section layout:fragment="header">
-            <h1>List WS_Webservice</h1>
+            <h1>List WS_AccessManagemet</h1>
             <ol class="breadcrumb">
                 <li><a href="/"><i class="fa fa-dashboard"></i> Home</a></li>
-                <li class="active">WS_Webservice</li>
+                <li class="active">WS_AccessManagemets</li>
             </ol>
         </section>
         <div layout:fragment="content">
             <div class="box">
 
                 <div class="box-header with-border">
-                    <a class="box-title btn btn-primary" th:href="@{/wswebservices/form}">ADD WS_Webservice</a>
-
+                    <a class="box-title btn btn-primary" th:href="@{/wsaccesmanagemets/form}">ADD WS_ACCESSMANAGEMENT</a>
 
                     <div class="box-tools">
-                        <form th:action="@{/wswebservices/list}" method="get">
+                        <form th:action="@{/wsaccesmanagemets/list}" method="get">
                             <div class="input-group input-group-sm" style="width: 250px;">
                                 <input type="text" name="value" class="form-control pull-right"
-                                       placeholder="search by parameter Name" th:if="${key} == null"/>
+                                       placeholder="search by command name" th:if="${key} == null"/>
                                 <input type="text" name="value" class="form-control pull-right"
-                                       placeholder="search by parameter Name" th:if="${key} != null"
+                                       placeholder="search by command name" th:if="${key} != null"
                                        th:value="${key}"/>
                                 <div class="input-group-btn">
                                     <button type="submit" class="btn btn-default"><i class="fa fa-search"></i></button>
@@ -35,7 +34,6 @@
                     </div>
                 </div>
 
-
                 <div class="box-body no-padding">
                     Show <span sd:page-size-selector="javascript"></span> entries
                     <div class="table-responsive">
@@ -43,39 +41,43 @@
                             <thead>
                                 <tr>
                                     <th><a class="fa fa-fw fa-sort"/><a class="sorted" sd:pagination-sort="id"/>ID</th>
-                                    <th><a class="fa fa-fw fa-sort"/><a class="sorted" sd:pagination-sort="webserviceName"/>Webservice Name</th>
-                                    <th><a class="fa fa-fw fa-sort"/><a class="sorted" sd:pagination-sort="apiUrl"/>URL</th>
-                                    <th><a class="fa fa-fw fa-sort"/><a class="sorted" sd:pagination-sort="webserviceType"/>Webserive Type</th>
-                                     <th><a class="fa fa-fw fa-sort"/><a class="sorted" sd:pagination-sort="remoteOperator"/>Operator</th>
-                                     <th><a class="fa fa-fw fa-sort"/><a class="sorted" sd:pagination-sort="remoteSecutityMode"/>Security Mode</th>
-                                    
+                                    <th><a class="fa fa-fw fa-sort"/><a class="sorted" sd:pagination-sort="accessName"/>AccessMgnt Name</th>
+                                    <th><a class="fa fa-fw fa-sort"/><a class="sorted" sd:pagination-sort="maxConnexionAllocate"/>Max Connection</th>
+                                     <th><a class="fa fa-fw fa-sort"/><a class="sorted" sd:pagination-sort="maxRequestAllocate"/>Max Request</th>
+                                      <th><a class="fa fa-fw fa-sort"/><a class="sorted" sd:pagination-sort="startTime"/>Start Time</th>
+                                    <th><a class="fa fa-fw fa-sort"/><a class="sorted" sd:pagination-sort="endTime"/>End Time</th>
+                                    <th>WS Client</th>
+                                    <th>WS Webservice</th>
                                     <th><a class="fa fa-fw fa-sort"/><a class="sorted" sd:pagination-sort="description"/>Description</th>
                                     <th><a class="fa fa-fw fa-sort"/><a class="sorted" sd:pagination-sort="createTime"/>Create Date</th>
                                     <th><a class="fa fa-fw fa-sort"/><a class="sorted" sd:pagination-sort="updateTime"/>Update Date</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr th:each="row : ${wswebservices}">
+                                <tr th:each="row : ${wsaccesmanagemets}">
                                     <td th:text="${row.id}"></td>
-                                    <td th:text="${row.webserviceName}"></td>
-                                    <td th:text="${row.apiUrl}"></td>
-                                    <td th:text="${row.webserviceType}"></td>
-                                    <td th:text="${row.remoteOperator}"></td>
-                                    <td th:text="${row.remoteSecutityMode}"></td>
-                                    
+                                    <td th:text="${row.accessName}"></td>
+                                    <td th:text="${row.maxConnexionAllocate}"></td>
+                                    <td th:text="${row.maxRequestAllocate}"></td>
+                                    <td th:text="${#dates.format(row.startTime, 'yyyy-MM-dd HH:mm:ss')}"></td>
+                                    <td th:text="${#dates.format(row.endTime, 'yyyy-MM-dd HH:mm:ss')}"></td>
+                                    <td th:if="${row.wsClient != null}" th:text="${row.wsClient.clientName}"></td>
+                                    <td th:if="${row.wsClient == null}" ></td>
+                                    <td th:if="${row.wsWebservice != null}" th:text="${row.wsWebservice.webserviceName}"></td>
+                                    <td th:if="${row.wsWebservice == null}" ></td>                                    
                                     <td th:text="${row.description}"></td>
                                     <td th:text="${#dates.format(row.createTime, 'yyyy-MM-dd HH:mm:ss')}"></td>
                                     <td th:text="${#dates.format(row.updateTime, 'yyyy-MM-dd HH:mm:ss')}"></td>
                                     <td>
-                                         <a href="#" class="btn btn-default" th:href="@{/wswebservices/view(id=${row.id})}"
+                                        <a href="#" class="btn btn-default" th:href="@{/wsaccesmanagemets/view(id=${row.id})}"
                                            title="View Data"><span class="glyphicon glyphicon-eye-open"></span></a>
-                                        <a href="#" class="btn btn-default" th:href="@{/wswebservices/form(id=${row.id})}"
+                                        <a href="#" class="btn btn-default" th:href="@{/wsaccesmanagemets/form(id=${row.id})}"
                                            title="Edit Data"><span class="glyphicon glyphicon-edit"></span></a>
-                                        <a href="#" class="btn btn-default" th:href="@{/wswebservices/delete(id=${row.id})}"
+                                        <a href="#" class="btn btn-default" th:href="@{/wsaccesmanagemets/delete(id=${row.id})}"
                                            title="Delete Data"><span class="glyphicon glyphicon-trash"></span></a>
                                     </td>
                                 </tr>
-                                <tr th:if="${#lists.isEmpty(wswebservices.content)}">
+                                <tr th:if="${#lists.isEmpty(wsaccesmanagemets.content)}">
                                     <td colspan="13" class="text-center">No data</td>
                                 </tr>
                             </tbody>
@@ -83,7 +85,7 @@
                     </div>      
                 </div>
 
-                <div th:if="${not #lists.isEmpty(wswebservices.content)}">
+                <div th:if="${not #lists.isEmpty(wsaccesmanagemets.content)}">
 
                     <div sd:pagination-summary="">info</div>
                     <div class="text-center">

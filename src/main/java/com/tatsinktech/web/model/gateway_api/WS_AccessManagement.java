@@ -62,11 +62,11 @@ public class WS_AccessManagement extends AbstractModel<Long> {
        
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "ws_client_id", nullable = true)
-    private WS_Client ws_client;
+    private WS_Client wsClient;
     
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "ws_webservice_id", nullable = true)
-    private WS_Webservice ws_webservice;
+    private WS_Webservice wsWebservice;
     
     @OneToMany(mappedBy = "access_management")
     private Set<WS_Transaction_Log> listtransaction_log = new HashSet<>();

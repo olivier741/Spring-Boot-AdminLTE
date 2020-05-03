@@ -24,7 +24,7 @@
                     <div class="box-body">
                         <input type="hidden" th:field="*{id}"/>
 
-                         <div class="form-group">
+                   <div class="form-group">
                             <label for="webserviceName">WS_Webservice Name</label>
                             <input type="text" required="true" class="form-control" th:field="*{webserviceName}"
                                    th:readonly="${enableEdit}"
@@ -33,7 +33,7 @@
                         </div>
                         <div class="form-group">
                             <label for="apiUrl">URL</label>
-                            <input type="text" required="true" class="form-control" th:field="*{apiUrl}"
+                            <input type="text" class="form-control" th:field="*{apiUrl}"
                                    th:readonly="${enableEdit}"
                                    style="width:800px;"
                                    id="apiUrl" />
@@ -50,7 +50,7 @@
                         
                         <div class="form-group">
                             <label for="apiRestUri">Rest URI</label>
-                            <input type="text" required="true" class="form-control" th:field="*{apiRestUri}"
+                            <input type="text"  class="form-control" th:field="*{apiRestUri}"
                                    th:readonly="${enableEdit}"
                                    style="width:800px;"
                                    id="apiRestUri" />
@@ -71,15 +71,15 @@
                         
                         <div class="form-group">
                             <label for="restMediaType">Media Type</label>
-                            <input type="text" required="true" class="form-control" th:field="*{restMediaType}"
+                            <input type="text"  class="form-control" th:field="*{restMediaType}"
                                    th:readonly="${enableEdit}"
                                    style="width:800px;"
                                    id="restMediaType" />
                         </div>
                         
                         <div class="form-group">
-                            <label for="contentType">Centent Type</label>
-                            <input type="text" required="true" class="form-control" th:field="*{contentType}"
+                            <label for="contentType">Content Type</label>
+                            <input type="text"  class="form-control" th:field="*{contentType}"
                                    th:readonly="${enableEdit}"
                                    style="width:800px;"
                                    id="contentType" />
@@ -136,7 +136,7 @@
                         
                          <div class="form-group">
                             <label for="remoteOperator">Operator</label>
-                            <input type="text" required="true" class="form-control" th:field="*{remoteOperator}"
+                            <input type="text" class="form-control" th:field="*{remoteOperator}"
                                    th:readonly="${enableEdit}"
                                    style="width:800px;"
                                    id="remoteOperator" />
@@ -144,25 +144,25 @@
                         
                         <div class="form-group">
                             <label for="remoteConTimeout">Connection TimeOut</label>
-                            <input type="number"  class="form-control" th:field="*{remoteConTimeout}"  required="true" th:readonly="${enableEdit}" 
+                            <input type="number"  class="form-control" th:field="*{remoteConTimeout}"  th:readonly="${enableEdit}" 
                                    style="width:800px;" id="remoteConTimeout" />
                         </div>
                         
                         <div class="form-group">
                             <label for="remoteReqTimeout">Request TimeOut</label>
-                            <input type="number"  class="form-control" th:field="*{remoteReqTimeout}"  required="true" th:readonly="${enableEdit}" 
+                            <input type="number"  class="form-control" th:field="*{remoteReqTimeout}" th:readonly="${enableEdit}" 
                                    style="width:800px;" id="remoteReqTimeout" />
                         </div>
                         
                         <div class="form-group">
                             <label for="remoteMaxConnexion">Max Connection</label>
-                            <input type="number"  class="form-control" th:field="*{remoteMaxConnexion}"  required="true" th:readonly="${enableEdit}" 
+                            <input type="number"  class="form-control" th:field="*{remoteMaxConnexion}" th:readonly="${enableEdit}" 
                                    style="width:800px;" id="remoteMaxConnexion" />
                         </div>
                         
                         <div class="form-group">
                             <label for="remoteMaxRequest">Max Request</label>
-                            <input type="number"  class="form-control" th:field="*{remoteMaxRequest}"  required="true" th:readonly="${enableEdit}" 
+                            <input type="number"  class="form-control" th:field="*{remoteMaxRequest}" th:readonly="${enableEdit}" 
                                    style="width:800px;" id="remoteMaxRequest" />
                         </div>
                         
@@ -183,7 +183,7 @@
                         
                         <div class="form-group">
                             <label for="securityLogin">Security Login</label>
-                            <input type="text" required="true" class="form-control" th:field="*{securityLogin}"
+                            <input type="text" class="form-control" th:field="*{securityLogin}"
                                    th:readonly="${enableEdit}"
                                    style="width:800px;"
                                    id="securityLogin" />
@@ -191,7 +191,7 @@
                         
                         <div class="form-group">
                             <label for="securityPassword">Security Password</label>
-                            <input type="text" required="true" class="form-control" th:field="*{securityPassword}"
+                            <input type="text" class="form-control" th:field="*{securityPassword}"
                                    th:readonly="${enableEdit}"
                                    style="width:800px;"
                                    id="securityLogin" />
@@ -199,7 +199,7 @@
                         
                         <div class="form-group">
                             <label for="authorizationType">Token Authorization Type</label>
-                            <input type="text" required="true" class="form-control" th:field="*{authorizationType}"
+                            <input type="text" class="form-control" th:field="*{authorizationType}"
                                    th:readonly="${enableEdit}"
                                    style="width:800px;"
                                    id="authorizationType" />
@@ -207,7 +207,7 @@
                         
                         <div class="form-group">
                             <label for="token">Token</label>
-                            <input type="text" required="true" class="form-control" th:field="*{token}"
+                            <input type="text" class="form-control" th:field="*{token}"
                                    th:readonly="${enableEdit}"
                                    style="width:800px;"
                                    id="token" />
@@ -216,7 +216,7 @@
                          <div class="form-group">
                             <label for="expireTimeToken">Start Time</label>
                             <div class='input-group date' style="width:800px;" id='expireTimeToken'>
-                                <input type='text' class="form-control" required="true" th:field="*{expireTimeToken}"   th:readonly="${enableEdit}"
+                                <input type='text' class="form-control" th:field="*{expireTimeToken}"   th:readonly="${enableEdit}"
                                        ng-model="dateString" />
                                 <span class="input-group-addon">
                                     <span class="glyphicon glyphicon-calendar"></span>

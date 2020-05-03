@@ -17,8 +17,10 @@ import javax.persistence.Column;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import javax.persistence.Transient;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -39,6 +41,11 @@ import org.hibernate.annotations.UpdateTimestamp;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
+@Table(name = "mo_hist",
+        indexes = {
+                @Index(columnList = "msisdn", name = "msisdn_mohist_idx"),
+                @Index(columnList = "transaction_id", name = "transaction_mohist_idx")
+        })
 public class Mo_Hist extends AbstractModel<Long> {
 
     @Column(name = "transaction_id")

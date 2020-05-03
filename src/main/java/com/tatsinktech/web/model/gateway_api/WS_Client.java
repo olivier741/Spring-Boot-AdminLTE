@@ -55,7 +55,7 @@ public class WS_Client extends AbstractModel<Long> {
     @Column(name = "tps_allow",nullable = true)
     private long tpsAllow;
 
-    @OneToMany(mappedBy = "ws_client")
+    @OneToMany(mappedBy = "wsClient")
     private Set<WS_AccessManagement> listAccessManagement = new HashSet<>();
 
    

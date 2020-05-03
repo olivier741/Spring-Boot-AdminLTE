@@ -17,6 +17,7 @@ import javax.persistence.Column;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
@@ -42,7 +43,11 @@ import org.hibernate.annotations.CreationTimestamp;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-@Table(name = "ws_transaction_log")
+@Table(name = "ws_transaction_log",
+        indexes = {
+                @Index(columnList = "msisdn", name = "msisdn_wstranslog_idx"),
+                @Index(columnList = "transaction_id", name = "transaction_wstranslog_idx")
+        })
 public class WS_Transaction_Log extends AbstractModel<Long> {
 
      @Column(name = "transaction_id",nullable = false)
