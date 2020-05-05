@@ -22,39 +22,57 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface RegisterRepository extends JpaRepository<Register, Long> {
+    
+    Register findRegisterById(long id);
 
     Page<Register> findByMsisdnContainingIgnoreCase(String msisdn, Pageable pageable);
+    
+    Page<Register> findByMsisdnIgnoreCase(String msisdn, Pageable pageable);
 
     Page<Register> findByTransactionIdContainingIgnoreCase(String transactionId, Pageable pageable);
+    
+    Page<Register> findByTransactionIdIgnoreCase(String transactionId, Pageable pageable);
 
     Page<Register> findByStatusContainingIgnoreCase(int status, Pageable pageable);
 
     Page<Register> findByAutoextendContainingIgnoreCase(boolean autoextend, Pageable pageable);
 
-    List<Register> findByRegTimeContainingIgnoreCase(Date reg_time, Pageable pageable);
+    Page<Register> findByRegTimeContainingIgnoreCase(Date reg_time, Pageable pageable);
 
-    List<Register> findByRenewTimeContainingIgnoreCase(Date renewTime, Pageable pageable);
+    Page<Register> findByRenewTimeContainingIgnoreCase(Date renewTime, Pageable pageable);
 
-    List<Register> findByExpireTimeContainingIgnoreCase(Date expireTime, Pageable pageable);
+    Page<Register> findByExpireTimeContainingIgnoreCase(Date expireTime, Pageable pageable);
 
-    List<Register> findByUnregTimeContainingIgnoreCase(Date unregTime, Pageable pageable);
+    Page<Register> findByUnregTimeContainingIgnoreCase(Date unregTime, Pageable pageable);
 
-    List<Register> findByCancelTimeContainingIgnoreCase(Date cancelTime, Pageable pageable);
+    Page<Register> findByCancelTimeContainingIgnoreCase(Date cancelTime, Pageable pageable);
 
-    List<Register> findByNumberRegContainingIgnoreCase(long numberReg, Pageable pageable);
+    Page<Register> findByNumberRegContainingIgnoreCase(long numberReg, Pageable pageable);
 
     Page<Register> findByDescriptionContainingIgnoreCase(String description, Pageable pageable);
 
     Page<Register> findByCreateTimeContainingIgnoreCase(Date create_time, Pageable pageable);
 
     Page<Register> findByUpdateTimeContainingIgnoreCase(Date update_time, Pageable pageable);
+    
+    // search repository
 
-    List<Register> findAllByRegTimeBetween(Date regTimeStart, Date regTimeEnd, Pageable pageable);
+    Page<Register> findByRegTimeBetween(Date regTimeStart, Date regTimeEnd, Pageable pageable);
 
-    List<Register> findAllByRegTimeBetweenAndMsisdnContainingIgnoreCase(Date regTimeStart, Date regTimeEnd, String msisdn, Pageable pageable);
+    Page<Register> findAllByRegTimeBetweenAndMsisdnContainingIgnoreCase(Date regTimeStart, Date regTimeEnd, String msisdn, Pageable pageable);
+    
+    Page<Register> findAllByRegTimeBetweenAndMsisdnIgnoreCase(Date regTimeStart, Date regTimeEnd, String msisdn, Pageable pageable);
 
-   List<Register> findAllByRegTimeBetweenAndTransactionIdContainingIgnoreCase(Date regTimeStart, Date regTimeEnd, String transactionId, Pageable pageable);
+    Page<Register> findAllByRegTimeBetweenAndTransactionIdContainingIgnoreCase(Date regTimeStart, Date regTimeEnd, String transactionId, Pageable pageable);
+    
+     Page<Register> findAllByRegTimeBetweenAndTransactionIdIgnoreCase(Date regTimeStart, Date regTimeEnd, String transactionId, Pageable pageable);
 
-   List<Register> findAllByRegTimeBetweenAndTransactionIdContainingIgnoreCaseAndMsisdnContainingIgnoreCase(Date regTimeStart, Date regTimeEnd, String transactionId,String msisdn, Pageable pageable);
+    Page<Register> findAllByRegTimeBetweenAndTransactionIdContainingIgnoreCaseAndMsisdnContainingIgnoreCase(Date regTimeStart, Date regTimeEnd, String transactionId, String msisdn, Pageable pageable);
+
+    Page<Register> findAllByRegTimeBetweenAndTransactionIdIgnoreCaseAndMsisdnContainingIgnoreCase(Date regTimeStart, Date regTimeEnd, String transactionId, String msisdn, Pageable pageable);
+
+    Page<Register> findAllByRegTimeBetweenAndTransactionIdContainingIgnoreCaseAndMsisdnIgnoreCase(Date regTimeStart, Date regTimeEnd, String transactionId, String msisdn, Pageable pageable);
+
+    Page<Register> findAllByRegTimeBetweenAndTransactionIdIgnoreCaseAndMsisdnIgnoreCase(Date regTimeStart, Date regTimeEnd, String transactionId, String msisdn, Pageable pageable);
 
 }

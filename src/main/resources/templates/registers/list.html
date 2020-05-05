@@ -15,7 +15,7 @@
         <div layout:fragment="content">
             <div class="box">
 
-                <form data-toggle="validator" role="form" th:object="${searchForm}" th:action="@{/registers/list}" method="get">
+                <form data-toggle="validator" role="form" th:object="${searchForm}" th:action="@{/registers/list}" method="post">
                     <div class="box-body">
 
                         <div class="form-group">
@@ -23,49 +23,62 @@
                             <input type="text" class="form-control" 
                                    th:field="*{transactionId}" 
                                    th:readonly="${enableEdit}"
-                                   style="width:800px;" 
+                                   style="width:400px;" 
                                    id="transactionId" />
-                        </div> 
+
+                            <input type="radio" id="option1" name="option1" class="custom-control-input" value="1" th:field="*{trans_option}">
+                            <label class="custom-control-label" for="option1">Contain</label>
+
+                            <input type="radio" id="option2" name="option2" class="custom-control-input" value="2" th:field="*{trans_option}">
+                            <label class="custom-control-label" for="option2">Equal</label>
+                        </div>
 
                         <div class="form-group">
                             <label for="msisdn">MSISDN</label>
                             <input type="text" class="form-control" 
                                    th:field="*{msisdn}" 
                                    th:readonly="${enableEdit}"
-                                   style="width:800px;" 
+                                   style="width:400px;" 
                                    id="msisdn" />
+
+                            <input type="radio" id="option3" name="option3" class="custom-control-input" value="1" th:field="*{msisdn_option}">
+                            <label class="custom-control-label" for="option3">Contain</label>
+
+                            <input type="radio" id="option4" name="option4" class="custom-control-input" value="2" th:field="*{msisdn_option}">
+                            <label class="custom-control-label" for="option4">Equal</label>
                         </div> 
 
                         <div class="form-group">
-                            <label for="Daterange">Range Date</label>
-                            <div class='input-group' style="width:160px;" id='daterange'>
+                            <label for="Daterange">Range Registration Date</label>
+                            <div class='input-group' style="width:200px;" id='daterange'>
+                                 <i class="fa fa-calendar"></i>&nbsp;
                                 <span class="input-group-addon">
                                     <span class="glyphicon glyphicon-calendar"></span>
                                 </span>
                             </div>
                         </div>
-                        
-                        
-                          <div class='input-group date' style="width:800px;" id='createTime'>
+
+
+                        <div class='input-group date' style="width:800px;" id='createTime'>
                             <input type="hidden" class="form-control" name="dateFrom" th:field="*{dateFrom}" 
                                    ng-model="dateString"  />
                         </div>
-                        
-                         <div class='input-group date' style="width:800px;" id='createTime'>
+
+                        <div class='input-group date' style="width:800px;" id='createTime'>
                             <input type="hidden" class="form-control" name="dateTo" th:field="*{dateTo}"
                                    ng-model="dateString"  />
                         </div>
 
                     </div>
                     <div class="form-group">
-                        <button type="submit" class="box-title btn btn-primary" title="Search Data">Search</button>
+                        <button type="submit" class="box-title btn btn-primary" style="width:200px;" title="Search Data">Search Data</button>
                     </div>
                 </form>
 
                 <div class="box-body no-padding">
                     Show <span sd:page-size-selector="javascript"></span> entries
                     <div class="table-responsive">
-                        <table class="table table-bordered table-hover">
+                        <table class="table table-bordered table-hover" >
                             <thead>
                                 <tr>
                                     <th><a class="fa fa-fw fa-sort"/><a class="sorted" sd:pagination-sort="id"/>ID</th>
