@@ -7,7 +7,6 @@ package com.tatsinktech.web.controller;
 
 import com.tatsinktech.web.beans.SearchForm;
 import com.tatsinktech.web.model.register.Register;
-import com.tatsinktech.web.repository.ProductRepository;
 import com.tatsinktech.web.repository.RegisterRepository;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -53,15 +52,94 @@ public class DataRegisterController {
     @Autowired
     private RegisterRepository registerRepo;
 
-    @Autowired
-    private ProductRepository productRepo;
-
     @InitBinder
     public void initBinder(WebDataBinder binder) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
         dateFormat.setLenient(false);
         binder.registerCustomEditor(Date.class, new CustomDateEditor(dateFormat, true));
 
+    }
+
+    @GetMapping("/download")
+    public ModelMap download(@PageableDefault(size = 10) Pageable pageable, @Valid @ModelAttribute("searchForm") SearchForm searchForm, Model model, @NotNull Authentication auth) {
+
+        loadMode(model, auth);
+        ModelMap result = new ModelMap().addAttribute("registers", registerRepo.findAll(pageable));
+        if (searchForm != null) {
+            String msisdn = searchForm.getMsisdn();
+            String transID = searchForm.getTransactionId();
+            Date dateFrom = searchForm.getDateFrom();
+            Date dateTo = searchForm.getDateTo();
+            int trans_option = searchForm.getTrans_option();
+            int msisdn_option = searchForm.getMsisdn_option();
+
+            if (!StringUtils.isBlank(msisdn) && dateFrom == null && dateTo == null) {
+                model.addAttribute("searchForm", searchForm);
+                if (msisdn_option == 2) {
+                    result = new ModelMap().addAttribute("registers", registerRepo.findByMsisdnIgnoreCase(msisdn, pageable));
+                } else {
+                    result = new ModelMap().addAttribute("registers", registerRepo.findByMsisdnContainingIgnoreCase(msisdn, pageable));
+                }
+
+            }
+
+            if (!StringUtils.isBlank(transID) && dateFrom == null && dateTo == null) {
+                model.addAttribute("searchForm", searchForm);
+                if (trans_option == 2) {
+                    result = new ModelMap().addAttribute("registers", registerRepo.findByTransactionIdIgnoreCase(transID, pageable));
+                } else {
+                    result = new ModelMap().addAttribute("registers", registerRepo.findByTransactionIdContainingIgnoreCase(transID, pageable));
+                }
+
+            }
+
+            if (StringUtils.isBlank(msisdn) && StringUtils.isBlank(transID) && dateFrom != null && dateTo != null) {
+                model.addAttribute("searchForm", searchForm);
+                result = new ModelMap().addAttribute("registers", registerRepo.findByRegTimeBetween(dateFrom, dateTo, pageable));
+            }
+
+            if (!StringUtils.isBlank(msisdn) && StringUtils.isBlank(transID) && dateFrom != null && dateTo != null) {
+                model.addAttribute("searchForm", searchForm);
+                if (msisdn_option == 2) {
+                    result = new ModelMap().addAttribute("registers", registerRepo.findAllByRegTimeBetweenAndMsisdnIgnoreCase(dateFrom, dateTo, msisdn, pageable));
+                } else {
+                    result = new ModelMap().addAttribute("registers", registerRepo.findAllByRegTimeBetweenAndMsisdnContainingIgnoreCase(dateFrom, dateTo, msisdn, pageable));
+                }
+
+            }
+
+            if (StringUtils.isBlank(msisdn) && !StringUtils.isBlank(transID) && dateFrom != null && dateTo != null) {
+                model.addAttribute("searchForm", searchForm);
+
+                if (trans_option == 2) {
+                    result = new ModelMap().addAttribute("registers", registerRepo.findAllByRegTimeBetweenAndTransactionIdIgnoreCase(dateFrom, dateTo, transID, pageable));
+                } else {
+                    result = new ModelMap().addAttribute("registers", registerRepo.findAllByRegTimeBetweenAndTransactionIdContainingIgnoreCase(dateFrom, dateTo, transID, pageable));
+                }
+            }
+
+            if (!StringUtils.isBlank(msisdn) && !StringUtils.isBlank(transID) && dateFrom != null && dateTo != null) {
+                model.addAttribute("searchForm", searchForm);
+
+                if (msisdn_option == 2 && trans_option == 2) {
+                    result = new ModelMap().addAttribute("registers", registerRepo.findAllByRegTimeBetweenAndTransactionIdIgnoreCaseAndMsisdnIgnoreCase(dateFrom, dateTo, transID, msisdn, pageable));
+                } else if (msisdn_option == 2 && trans_option != 2) {
+                    result = new ModelMap().addAttribute("registers", registerRepo.findAllByRegTimeBetweenAndTransactionIdContainingIgnoreCaseAndMsisdnIgnoreCase(dateFrom, dateTo, transID, msisdn, pageable));
+                } else if (msisdn_option != 2 && trans_option == 2) {
+                    result = new ModelMap().addAttribute("registers", registerRepo.findAllByRegTimeBetweenAndTransactionIdIgnoreCaseAndMsisdnContainingIgnoreCase(dateFrom, dateTo, transID, msisdn, pageable));
+                } else {
+                    result = new ModelMap().addAttribute("registers", registerRepo.findAllByRegTimeBetweenAndTransactionIdContainingIgnoreCaseAndMsisdnContainingIgnoreCase(dateFrom, dateTo, transID, msisdn, pageable));
+                }
+            }
+
+        } else {
+            SearchForm searchForm1 = new SearchForm();
+            searchForm1.setDateFrom(new Date());
+            searchForm1.setDateTo(new Date());
+            model.addAttribute("searchForm", searchForm1);
+        }
+
+        return result;
     }
 
     @GetMapping("/view")
@@ -84,11 +162,79 @@ public class DataRegisterController {
     public ModelMap getlist(@PageableDefault(size = 10) Pageable pageable, @Valid @ModelAttribute("searchForm") SearchForm searchForm, Model model, @NotNull Authentication auth) {
         loadMode(model, auth);
         ModelMap result = new ModelMap().addAttribute("registers", registerRepo.findAll(pageable));
+        if (searchForm != null) {
+            String msisdn = searchForm.getMsisdn();
+            String transID = searchForm.getTransactionId();
+            Date dateFrom = searchForm.getDateFrom();
+            Date dateTo = searchForm.getDateTo();
+            int trans_option = searchForm.getTrans_option();
+            int msisdn_option = searchForm.getMsisdn_option();
 
-        SearchForm searchForm1 = new SearchForm();
-        searchForm1.setDateFrom(new Date());
-        searchForm1.setDateTo(new Date());
-        model.addAttribute("searchForm", searchForm1);
+            if (!StringUtils.isBlank(msisdn) && dateFrom == null && dateTo == null) {
+                model.addAttribute("searchForm", searchForm);
+                if (msisdn_option == 2) {
+                    result = new ModelMap().addAttribute("registers", registerRepo.findByMsisdnIgnoreCase(msisdn, pageable));
+                } else {
+                    result = new ModelMap().addAttribute("registers", registerRepo.findByMsisdnContainingIgnoreCase(msisdn, pageable));
+                }
+
+            }
+
+            if (!StringUtils.isBlank(transID) && dateFrom == null && dateTo == null) {
+                model.addAttribute("searchForm", searchForm);
+                if (trans_option == 2) {
+                    result = new ModelMap().addAttribute("registers", registerRepo.findByTransactionIdIgnoreCase(transID, pageable));
+                } else {
+                    result = new ModelMap().addAttribute("registers", registerRepo.findByTransactionIdContainingIgnoreCase(transID, pageable));
+                }
+
+            }
+
+            if (StringUtils.isBlank(msisdn) && StringUtils.isBlank(transID) && dateFrom != null && dateTo != null) {
+                model.addAttribute("searchForm", searchForm);
+                result = new ModelMap().addAttribute("registers", registerRepo.findByRegTimeBetween(dateFrom, dateTo, pageable));
+            }
+
+            if (!StringUtils.isBlank(msisdn) && StringUtils.isBlank(transID) && dateFrom != null && dateTo != null) {
+                model.addAttribute("searchForm", searchForm);
+                if (msisdn_option == 2) {
+                    result = new ModelMap().addAttribute("registers", registerRepo.findAllByRegTimeBetweenAndMsisdnIgnoreCase(dateFrom, dateTo, msisdn, pageable));
+                } else {
+                    result = new ModelMap().addAttribute("registers", registerRepo.findAllByRegTimeBetweenAndMsisdnContainingIgnoreCase(dateFrom, dateTo, msisdn, pageable));
+                }
+
+            }
+
+            if (StringUtils.isBlank(msisdn) && !StringUtils.isBlank(transID) && dateFrom != null && dateTo != null) {
+                model.addAttribute("searchForm", searchForm);
+
+                if (trans_option == 2) {
+                    result = new ModelMap().addAttribute("registers", registerRepo.findAllByRegTimeBetweenAndTransactionIdIgnoreCase(dateFrom, dateTo, transID, pageable));
+                } else {
+                    result = new ModelMap().addAttribute("registers", registerRepo.findAllByRegTimeBetweenAndTransactionIdContainingIgnoreCase(dateFrom, dateTo, transID, pageable));
+                }
+            }
+
+            if (!StringUtils.isBlank(msisdn) && !StringUtils.isBlank(transID) && dateFrom != null && dateTo != null) {
+                model.addAttribute("searchForm", searchForm);
+
+                if (msisdn_option == 2 && trans_option == 2) {
+                    result = new ModelMap().addAttribute("registers", registerRepo.findAllByRegTimeBetweenAndTransactionIdIgnoreCaseAndMsisdnIgnoreCase(dateFrom, dateTo, transID, msisdn, pageable));
+                } else if (msisdn_option == 2 && trans_option != 2) {
+                    result = new ModelMap().addAttribute("registers", registerRepo.findAllByRegTimeBetweenAndTransactionIdContainingIgnoreCaseAndMsisdnIgnoreCase(dateFrom, dateTo, transID, msisdn, pageable));
+                } else if (msisdn_option != 2 && trans_option == 2) {
+                    result = new ModelMap().addAttribute("registers", registerRepo.findAllByRegTimeBetweenAndTransactionIdIgnoreCaseAndMsisdnContainingIgnoreCase(dateFrom, dateTo, transID, msisdn, pageable));
+                } else {
+                    result = new ModelMap().addAttribute("registers", registerRepo.findAllByRegTimeBetweenAndTransactionIdContainingIgnoreCaseAndMsisdnContainingIgnoreCase(dateFrom, dateTo, transID, msisdn, pageable));
+                }
+            }
+
+        } else {
+            SearchForm searchForm1 = new SearchForm();
+            searchForm1.setDateFrom(new Date());
+            searchForm1.setDateTo(new Date());
+            model.addAttribute("searchForm", searchForm1);
+        }
 
         return result;
     }

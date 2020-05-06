@@ -51,7 +51,7 @@
                         <div class="form-group">
                             <label for="Daterange">Range Registration Date</label>
                             <div class='input-group' style="width:200px;" id='daterange'>
-                                 <i class="fa fa-calendar"></i>&nbsp;
+                                <i class="fa fa-calendar"></i>&nbsp;
                                 <span class="input-group-addon">
                                     <span class="glyphicon glyphicon-calendar"></span>
                                 </span>
@@ -75,10 +75,18 @@
                     </div>
                 </form>
 
+                <div>
+                    <a th:href="@{/registers/download.pdf}" class="btn btn-primary" target="_blank">Export PDF</a>
+                    <a th:href="@{/registers/download.xlsx}" class="btn btn-primary" target="_blank">Export Excel</a>
+                    <a th:href="@{/registers/download.csv}" class="btn btn-primary" target="_blank">Export CSV</a>
+                </div>
+
+                <br/>
+
                 <div class="box-body no-padding">
                     Show <span sd:page-size-selector="javascript"></span> entries
                     <div class="table-responsive">
-                        <table class="table table-bordered table-hover" >
+                        <table class="table table-bordered table-hover" id="table-product"  >
                             <thead>
                                 <tr>
                                     <th><a class="fa fa-fw fa-sort"/><a class="sorted" sd:pagination-sort="id"/>ID</th>
