@@ -20,11 +20,4 @@ public class ApplicationWeb {
         return new SpringDataDialect();
     }
 
-//    @Bean
-//    public Jaxb2Marshaller jaxb2Marshaller() {
-//
-//        Jaxb2Marshaller jaxb2Marshaller = new Jaxb2Marshaller();
-//        jaxb2Marshaller.setClassesToBeBound(new Class[]{XmlViewComponent.class});
-//        return jaxb2Marshaller;
-//    }
 }

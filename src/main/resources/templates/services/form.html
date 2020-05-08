@@ -1,85 +1,121 @@
-<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="layout">
     <head>
         <title>ADD SERVICES</title>
     </head>
     <body>
-        <section layout:fragment="header">
-            <h1>SERVICES</h1>
-            <ol class="breadcrumb">
-                <li><a href="/"><i class="fa fa-dashboard"></i> Home</a></li>
-                <li class="active">ADD SERVICES</li>
-            </ol>
-        </section>
-        <div layout:fragment="content">
-            <div class="box">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Form</h3>
-                    <div class="box-tools pull-right">
-                        <a href="/services/list" type="button" class="btn btn-box-tool"><i class="fa fa-list-ul"></i></a>
+
+        <!-- Content Wrapper. Contains page content -->
+        <div class="content-wrapper" layout:fragment="content">
+            <!-- Content Header (Page header) -->
+            <section class="content-header">
+                <div class="container-fluid">
+                    <div class="row mb-2">
+                        <div class="col-sm-6">
+                            <h1>Add Service</h1>
+                        </div>
+                        <div class="col-sm-6">
+                            <ol class="breadcrumb float-sm-right">
+                                <li class="breadcrumb-item"><a href="/">Home</a></li>
+                                <li class="breadcrumb-item active">Add Service</li>
+                            </ol>
+                        </div>
                     </div>
-                </div>
+                </div><!-- /.container-fluid -->
+            </section>
+
+            <!-- Main content -->
+            <section class="content">
                 <form data-toggle="validator" role="form" th:object="${srv}" th:action="@{/services/form}" method="post">
-                    <div class="box-body">
-                        <input type="hidden" th:field="*{id}"/>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card card-primary">
+                                <div class="card-header">
+                                    <h3 class="card-title">General</h3>
 
-                        <div class="form-group">
-                            <label for="serviceName">Service Name</label>
-                            <input type="text" required="true" class="form-control" th:field="*{serviceName}"
-                                   th:readonly="${enableEdit}"
-                                   style="width:800px;"  
-                                   id="serviceName" />
-                        </div>
-                        <div class="form-group">
-                            <label for="receiveChannel">Receive Channel</label>
-                            <input type="text" required="true" class="form-control" th:field="*{receiveChannel}"
-                                   th:readonly="${enableEdit}"
-                                   style="width:800px;"
-                                   id="receiveChannel" />
-                        </div>
-                        <div class="form-group">
-                            <label for="sendChannel">Send Channel</label>
-                            <input type="text" required="true" class="form-control" th:field="*{sendChannel}"
-                                   th:readonly="${enableEdit}"
-                                   style="width:800px;"
-                                   id="sendChannel" />
-                        </div>
+                                    <div class="card-tools">
+                                        <button type="button" class="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip" title="Collapse">
+                                            <i class="fas fa-minus"></i></button>
+                                    </div>
+                                </div>
 
-                        <div class="form-group">
-                            <label for="serviceProvider">Service Provider</label>
-                            <input type="text"  class="form-control" th:field="*{serviceProvider}" 
-                                   th:readonly="${enableEdit}"
-                                   style="width:800px;"
-                                   id="serviceProvider" />
-                        </div>
+                                <div class="card-body">
+                                    <div class="form-group">
+                                        <label for="serviceName">Service Name</label>
+                                        <input type="text" required="true" class="form-control" th:field="*{serviceName}"
+                                               th:readonly="${enableEdit}"
+                                               id="serviceName" />
+                                    </div>
 
-                        <div class="form-group">
-                            <label for="Description">Description</label>
-                            <input type="text"  class="form-control" th:field="*{description}" 
-                                   th:readonly="${enableEdit}"
-                                   style="width:800px;"
-                                   id="description" />
-                        </div>
-                         <div class='input-group date' style="width:800px;" id='createTime'>
-                            <input type="hidden" class="form-control"  th:field="*{createTime}" 
-                                   ng-model="dateString"  />
+                                    <div class="form-group">
+                                        <label for="receiveChannel">Receive Channel</label>
+                                        <input type="text" required="true" class="form-control" th:field="*{receiveChannel}"
+                                               th:readonly="${enableEdit}"
+                                               id="receiveChannel" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="sendChannel">Send Channel</label>
+                                        <input type="text" required="true" class="form-control" th:field="*{sendChannel}"
+                                               th:readonly="${enableEdit}"
+                                               id="sendChannel" />
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="serviceProvider">Service Provider</label>
+                                        <input type="text"  class="form-control" th:field="*{serviceProvider}" 
+                                               th:readonly="${enableEdit}"
+                                               id="serviceProvider" />
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="Description">Description</label>
+                                        <input type="text"  class="form-control" th:field="*{description}" 
+                                               th:readonly="${enableEdit}"
+                                               id="description" />
+                                    </div>
+                                    <div class='input-group date' id='createTime'>
+                                        <input type="hidden" class="form-control"  th:field="*{createTime}" 
+                                               ng-model="dateString"  />
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="Description">Description</label>
+                                        <textarea   class="form-control" th:field="*{description}" 
+                                                    th:readonly="${enableEdit}"
+                                                    id="description" rows="4"></textarea>
+                                    </div>
+                                </div>
+                                <!-- /.card-body -->
+                            </div>
+                            <!-- /.card -->
                         </div>
                     </div>
-                    <div class="form-group">
-                        <a th:href="@{/services/list}" class="btn btn-default" role="button" title="Back list">
-                            <span aria-hidden="true"></span>Back To List
-                        </a>
-                        <span th:if="${enableSave}">
-                            <button type="submit" class="box-title btn btn-primary" name="action" value="save" title="Save Data">Save</button>
-                        </span>
-                        <span th:unless="${enableSave}">
-                            <button type="submit" class="box-title btn btn-primary" name="action" value="update" title="Update Data">Update</button>
-                        </span>
+                    <div class="row">
+                        <div class="col-6">
+                            <a th:href="@{/services/list}" class="btn btn-secondary" role="button" title="Back-To list">
+                                <span aria-hidden="true"></span>Back To List
+                            </a>
 
+                            <span th:if="${enableSave}">
+                                <button type="submit" class="btn btn-success float-right" name="action" value="save" title="Save Data">Create new Service</button>
+                            </span>
+
+                            <span th:unless="${enableSave}">
+                                <button type="submit" class="btn btn-success float-right" name="action" value="update" title="Update Data">Update Service</button>
+                            </span>
+                        </div>
                     </div>
                 </form>
-            </div>
+            </section>
+            <!-- /.content -->
         </div>
+        <!-- /.content-wrapper -->
+
     </body>
 </html>
